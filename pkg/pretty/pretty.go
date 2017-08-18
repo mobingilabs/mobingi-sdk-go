@@ -43,6 +43,13 @@ func Print(w io.Writer, s interface{}, lvl, indent int) {
 			for i := 0; i < v.Len(); i++ {
 				Print(w, v.Index(i).Interface(), lvl+1, indent)
 			}
+		case reflect.Ptr:
+			v := reflect.ValueOf(s).Elem()
+			if v.IsValid() {
+				Print(w, v.Interface(), lvl+1, indent)
+			} else {
+				fmt.Fprintf(w, "%snil\n", pad)
+			}
 		default:
 			fmt.Fprintf(w, "%s%#v\n", pad, s)
 		}
