@@ -2,7 +2,7 @@ package debug
 
 import "os"
 
-func isError(err interface{}) bool {
+func ErrorExit(err interface{}, code int) {
 	var valid bool
 	switch err.(type) {
 	case string:
@@ -17,11 +17,7 @@ func isError(err interface{}) bool {
 		}
 	}
 
-	return valid
-}
-
-func ErrorExit(err interface{}, code int) {
-	if valid := isError(err); valid {
+	if valid {
 		os.Exit(code)
 	}
 }
