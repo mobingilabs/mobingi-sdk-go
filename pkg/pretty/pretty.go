@@ -17,9 +17,9 @@ func Indent(count int) string {
 	return pad
 }
 
-// PrettyPrint prints the `field: value` of the input interface recursively. Recursion
+// Print prints the `field: value` of the input interface recursively. Recursion
 // level `lvl` and `indent` are provided for indention in printing.
-func PrettyPrint(w io.Writer, s interface{}, lvl, indent int) {
+func Print(w io.Writer, s interface{}, lvl, indent int) {
 	pad := Indent(lvl * indent)
 	rt := reflect.TypeOf(s).Elem()
 	rv := reflect.ValueOf(s).Elem()
@@ -36,12 +36,12 @@ func PrettyPrint(w io.Writer, s interface{}, lvl, indent int) {
 		case reflect.Struct:
 			fmt.Fprintf(w, "%s[%s]\n", pad, field)
 			v := rv.Field(i).Addr()
-			PrettyPrint(w, v.Interface(), lvl+1, indent)
+			Print(w, v.Interface(), lvl+1, indent)
 		case reflect.Slice:
 			fmt.Fprintf(w, "%s[%s]\n", pad, field)
 			v := reflect.ValueOf(s)
 			for i := 0; i < v.Len(); i++ {
-				PrettyPrint(w, v.Index(i).Interface(), lvl+1, indent)
+				Print(w, v.Index(i).Interface(), lvl+1, indent)
 			}
 		default:
 			fmt.Fprintf(w, "%s%#v\n", pad, s)
