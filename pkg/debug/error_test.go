@@ -1,3 +1,0 @@
-package debug
-
-func TestIsError
