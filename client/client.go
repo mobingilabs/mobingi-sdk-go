@@ -12,30 +12,34 @@ import (
 	"github.com/pkg/errors"
 )
 
+type Config struct {
+	Timeout time.Duration
+	Verbose bool
+	Logger  *log.Logger // stdout when nil, verbose should be true
+}
+
 type httpClient interface {
 	Do(context.Context, *http.Request) (*http.Response, []byte, error)
 }
 
 type simpleHttpClient struct {
-	client  *http.Client
-	timeout time.Duration
-	verbose bool
-	logger  *log.Logger // stdout when nil, verbose should be true
+	client *http.Client
+	cnf    *Config
 }
 
 func (c *simpleHttpClient) Do(ctx context.Context, r *http.Request) (*http.Response, []byte, error) {
-	if c.verbose {
-		if c.logger == nil {
+	if c.cnf.Verbose {
+		if c.cnf.Logger == nil {
 			debug.Info("[URL]", r.URL.String())
 			debug.Info("[METHOD]", r.Method)
 			for n, h := range r.Header {
 				debug.Info(fmt.Sprintf("[REQUEST] %s: %s", n, h))
 			}
 		} else {
-			c.logger.Println("[URL]", r.URL.String())
-			c.logger.Println("[METHOD]", r.Method)
+			c.cnf.Logger.Println("[URL]", r.URL.String())
+			c.cnf.Logger.Println("[METHOD]", r.Method)
 			for n, h := range r.Header {
-				c.logger.Println(fmt.Sprintf("[REQUEST] %s: %s", n, h))
+				c.cnf.Logger.Println(fmt.Sprintf("[REQUEST] %s: %s", n, h))
 			}
 		}
 	}
@@ -43,8 +47,8 @@ func (c *simpleHttpClient) Do(ctx context.Context, r *http.Request) (*http.Respo
 	var lctx context.Context
 	var lcancel context.CancelFunc
 	req := r
-	if c.timeout > 0 {
-		lctx, lcancel = context.WithTimeout(ctx, c.timeout)
+	if c.cnf.Timeout > 0 {
+		lctx, lcancel = context.WithTimeout(ctx, c.cnf.Timeout)
 		req = r.WithContext(lctx)
 	}
 
@@ -58,8 +62,8 @@ func (c *simpleHttpClient) Do(ctx context.Context, r *http.Request) (*http.Respo
 		defer lcancel()
 	}
 
-	if c.verbose {
-		if c.logger == nil {
+	if c.cnf.Verbose {
+		if c.cnf.Logger == nil {
 			for n, h := range resp.Header {
 				debug.Info(fmt.Sprintf("[RESPONSE] %s: %s", n, h))
 			}
@@ -67,10 +71,10 @@ func (c *simpleHttpClient) Do(ctx context.Context, r *http.Request) (*http.Respo
 			debug.Info("[STATUS]", resp.Status)
 		} else {
 			for n, h := range resp.Header {
-				c.logger.Println(fmt.Sprintf("[RESPONSE] %s: %s", n, h))
+				c.cnf.Logger.Println(fmt.Sprintf("[RESPONSE] %s: %s", n, h))
 			}
 
-			c.logger.Println("[STATUS]", resp.Status)
+			c.cnf.Logger.Println("[STATUS]", resp.Status)
 		}
 	}
 
@@ -82,15 +86,18 @@ func (c *simpleHttpClient) Do(ctx context.Context, r *http.Request) (*http.Respo
 	return resp, body, nil
 }
 
-// NewSimpleHttpClient creates an instance of simpleHttpClient.
-//
-// If client is nil, http.DefaultClient is used. If logger is nil, standard log is used when
-// verbose is set to true.
-func NewSimpleHttpClient(timeout time.Duration, verbose bool, logger *log.Logger) *simpleHttpClient {
+func NewSimpleHttpClient(cnf *Config) *simpleHttpClient {
+	if cnf == nil {
+		return &simpleHttpClient{
+			client: http.DefaultClient,
+			cnf: &Config{
+				Timeout: time.Second * 120,
+			},
+		}
+	}
+
 	return &simpleHttpClient{
-		client:  http.DefaultClient,
-		timeout: timeout,
-		verbose: verbose,
-		logger:  logger,
+		client: http.DefaultClient,
+		cnf:    cnf,
 	}
 }

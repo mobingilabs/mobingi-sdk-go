@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewSimpleHttpClient(t *testing.T) {
-	c := NewSimpleHttpClient(0, false, nil)
+	c := NewSimpleHttpClient(nil)
 	if c == nil {
 		t.Errorf("Expected an object, received nil")
 	}
@@ -19,7 +19,7 @@ func TestDo(t *testing.T) {
 	}))
 
 	defer ts.Close()
-	c := NewSimpleHttpClient(0, false, nil)
+	c := NewSimpleHttpClient(nil)
 	r, err := http.NewRequest(http.MethodGet, ts.URL+"/test", nil)
 	if err != nil {
 		t.Errorf("New request failed: %#v", err)
