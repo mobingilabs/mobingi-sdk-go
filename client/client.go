@@ -19,7 +19,7 @@ type Config struct {
 }
 
 type httpClient interface {
-	Do(context.Context, *http.Request) (*http.Response, []byte, error)
+	Do(*http.Request) (*http.Response, []byte, error)
 }
 
 type simpleHttpClient struct {
@@ -27,7 +27,7 @@ type simpleHttpClient struct {
 	cnf    *Config
 }
 
-func (c *simpleHttpClient) Do(ctx context.Context, r *http.Request) (*http.Response, []byte, error) {
+func (c *simpleHttpClient) Do(r *http.Request) (*http.Response, []byte, error) {
 	if c.cnf.Verbose {
 		if c.cnf.Logger == nil {
 			debug.Info("[URL]", r.URL.String())
@@ -48,6 +48,7 @@ func (c *simpleHttpClient) Do(ctx context.Context, r *http.Request) (*http.Respo
 	var lcancel context.CancelFunc
 	req := r
 	if c.cnf.Timeout > 0 {
+		ctx := req.Context()
 		lctx, lcancel = context.WithTimeout(ctx, c.cnf.Timeout)
 		req = r.WithContext(lctx)
 	}

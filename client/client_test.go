@@ -25,7 +25,7 @@ func TestDo(t *testing.T) {
 		t.Errorf("New request failed: %#v", err)
 	}
 
-	resp, body, err := c.Do(r.Context(), r)
+	resp, body, err := c.Do(r)
 	if err != nil {
 		t.Errorf("Do failed: %#v", err)
 	}
