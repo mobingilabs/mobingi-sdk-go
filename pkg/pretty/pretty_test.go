@@ -37,5 +37,6 @@ func TestJSON(t *testing.T) {
 	}
 
 	mck.St1 = append(mck.St1, t1{S: "hello"})
-	fmt.Println(JSON(mck, 1, 2))
+	s := JSON(mck, 2)
+	fmt.Println(s)
 }
