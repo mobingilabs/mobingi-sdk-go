@@ -99,7 +99,7 @@ func (s *Session) getAccessToken() (string, error) {
 	return token, nil
 }
 
-func NewSession(cnf ...*Config) (*Session, error) {
+func New(cnf ...*Config) (*Session, error) {
 	c := &Config{
 		ClientId:        os.Getenv("MOBINGI_CLIENT_ID"),
 		ClientSecret:    os.Getenv("MOBINGI_CLIENT_SECRET"),
