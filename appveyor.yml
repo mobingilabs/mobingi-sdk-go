@@ -18,6 +18,7 @@ install:
   - go version
   - go env
 
-    # build_script:
+build_script:
+  - go test -v ./...
     # - go test -v ./cmd
     # - go test -v ./client
