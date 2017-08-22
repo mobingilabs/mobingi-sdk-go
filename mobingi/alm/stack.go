@@ -12,12 +12,16 @@ type StackDescribeInput struct {
 	StackId string
 }
 
+type StackCreateInput struct {
+	StackId string
+}
+
 type stack struct {
 	session *session.Session
 	client  client.HttpClient
 }
 
-func (s *stack) List() (*http.Response, []byte, error) {
+func (s *stack) List() (*client.Response, []byte, error) {
 	req, err := http.NewRequest(http.MethodGet, s.session.ApiEndpoint()+"/alm/stack", nil)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "new request failed")
@@ -27,7 +31,7 @@ func (s *stack) List() (*http.Response, []byte, error) {
 	return s.client.Do(req)
 }
 
-func (s *stack) Describe(in *StackDescribeInput) (*http.Response, []byte, error) {
+func (s *stack) Describe(in *StackDescribeInput) (*client.Response, []byte, error) {
 	if in == nil {
 		return nil, nil, errors.New("input cannot be nil")
 	}
@@ -44,6 +48,10 @@ func (s *stack) Describe(in *StackDescribeInput) (*http.Response, []byte, error)
 
 	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
 	return s.client.Do(req)
+}
+
+func (s *stack) Create(in *StackDescribeInput) (*client.Response, []byte, error) {
+	return nil, nil, nil
 }
 
 func New(s *session.Session) *stack {
