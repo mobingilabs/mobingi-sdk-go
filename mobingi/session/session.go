@@ -42,22 +42,26 @@ type Config struct {
 	// BaseRegistryUrl is the base URL for Mobingi Docker Registry. Default is the
 	// latest production endpoint.
 	BaseRegistryUrl string
+
+	// HttpClientConfig will set the config for the session's http client. Do not
+	// set if you want to use http client defaults.
+	HttpClientConfig *client.Config
 }
 
-type session struct {
+type Session struct {
 	Config   *Config
 	ApiToken string
 }
 
-func (s *session) ApiEndpoint() string {
+func (s *Session) ApiEndpoint() string {
 	return fmt.Sprintf("%s/v%d", s.Config.BaseApiUrl, s.Config.ApiVersion)
 }
 
-func (s *session) RegistryEndpoint() string {
+func (s *Session) RegistryEndpoint() string {
 	return fmt.Sprintf("%s/v2", s.Config.BaseRegistryUrl)
 }
 
-func (s *session) getAccessToken() (string, error) {
+func (s *Session) getAccessToken() (string, error) {
 	var token string
 	p := authPayload{
 		ClientId:     s.Config.ClientId,
@@ -75,7 +79,7 @@ func (s *session) getAccessToken() (string, error) {
 	}
 
 	r.Header.Add("Content-Type", "application/json")
-	c := client.NewSimpleHttpClient(nil)
+	c := client.NewSimpleHttpClient()
 	_, body, err := c.Do(r)
 	if err != nil {
 		return token, errors.Wrap(err, "do failed")
@@ -95,7 +99,7 @@ func (s *session) getAccessToken() (string, error) {
 	return token, nil
 }
 
-func NewSession(cnf ...*Config) (*session, error) {
+func NewSession(cnf ...*Config) (*Session, error) {
 	c := &Config{
 		ClientId:        os.Getenv("MOBINGI_CLIENT_ID"),
 		ClientSecret:    os.Getenv("MOBINGI_CLIENT_SECRET"),
@@ -128,7 +132,7 @@ func NewSession(cnf ...*Config) (*session, error) {
 		}
 	}
 
-	s := &session{Config: c}
+	s := &Session{Config: c}
 	token, err := s.getAccessToken()
 	if err != nil {
 		return s, errors.Wrap(err, "get access token failed")
