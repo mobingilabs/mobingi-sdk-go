@@ -1,4 +1,4 @@
-package mobingi
+package session
 
 import (
 	"bytes"
