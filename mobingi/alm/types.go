@@ -59,6 +59,11 @@ type ListStack struct {
 	UserId        string        `json:"user_id,omitempty"`
 }
 
+type State struct {
+	Code string `json:"Code,omitempty"`
+	Name string `json:"Name,omitempty"`
+}
+
 type Instance struct {
 	AmiLaunchIndex        string      `json:"AmiLaunchIndex,omitempty"`
 	Architecture          string      `json:"Architecture,omitempty"`
@@ -86,7 +91,7 @@ type Instance struct {
 	RootDeviceType        string      `json:"RootDeviceType,omitempty"`
 	SecurityGroups        interface{} `json:"SecurityGroups,omitempty"`
 	SourceDestCheck       bool        `json:"SourceDestCheck,omitempty"`
-	State                 interface{} `json:"State,omitempty"`
+	State                 State       `json:"State,omitempty"`
 	StateTransitionReason string      `json:"StateTransitionReason,omitempty"`
 	SubnetId              string      `json:"SubnetId,omitempty"`
 	Tags                  interface{} `json:"Tags,omitempty"`
