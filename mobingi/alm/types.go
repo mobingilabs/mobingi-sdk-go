@@ -1,5 +1,9 @@
 package alm
 
+// Changes:
+//
+// 2017-07-18:
+//   - Max, MaxOrigin, Min, MinOrigin - changed to int (we still need to support old string)
 type Configuration struct {
 	AWS                 string      `json:"AWS,omitempty"`
 	AWSAccountName      string      `json:"AWS_ACCOUNT_NAME,omitempty"`
