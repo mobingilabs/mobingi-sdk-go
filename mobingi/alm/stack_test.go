@@ -64,6 +64,11 @@ func TestCreate(t *testing.T) {
 	})
 
 	alm := New(sess)
-	_, body, _ := alm.Create(&StackCreateInput{})
-	_ = body
+	_, body, _ := alm.Create(&StackCreateInput{
+		CredId: "id",
+	})
+
+	if string(body) != "/v2/alm/stack" {
+		t.Errorf("Expecting '/v2/alm/stack', got %s", string(body))
+	}
 }
