@@ -24,11 +24,7 @@ func TestNewSession(t *testing.T) {
 		t.Errorf("Expected value 'clientid', got %s", s3.Config.ClientId)
 	}
 
-	s4, err := NewSession(&Config{ApiVersion: 3})
-	if err == nil {
-		t.Errorf("Expected error, got nil")
-	}
-
+	s4, _ := NewSession(&Config{ApiVersion: 3})
 	if s4.ApiEndpoint() != "https://alm.mobingi.com/v3" {
 		t.Errorf("Invalid api url")
 	}
