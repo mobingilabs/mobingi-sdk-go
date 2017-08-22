@@ -51,3 +51,19 @@ func TestDescribe(t *testing.T) {
 		t.Errorf("Expecting '/v2/alm/stack/id', got %s", string(body))
 	}
 }
+
+func TestCreate(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(r.URL.String()))
+	}))
+
+	defer ts.Close()
+	sess, _ := session.New(&session.Config{
+		BaseApiUrl: ts.URL,
+		ApiVersion: 2,
+	})
+
+	alm := New(sess)
+	_, body, _ := alm.Create(&StackCreateInput{})
+	_ = body
+}
