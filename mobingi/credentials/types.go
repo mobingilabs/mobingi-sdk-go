@@ -16,6 +16,16 @@ type VendorCredentials struct {
 	LastModified string `json:"lastModified,omitempty"`
 }
 
+type AWSCredentials struct {
+	Name   string `json:"AWSAccountName,omitempty"`
+	KeyId  string `json:"AWSSecretKey,omitempty"`
+	Secret string `json:"AWSSecretKeyId,omitempty"`
+}
+
+type AddVendorCredentials struct {
+	Credentials AWSCredentials `json:"credentials,omitempty"`
+}
+
 type UserPass struct {
 	Username string
 	Password string
