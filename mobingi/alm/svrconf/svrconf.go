@@ -20,6 +20,11 @@ type ServerConfigUpdateEnvVarsInput struct {
 	EnvVars string
 }
 
+type ServerConfigUpdateFilePathInput struct {
+	StackId  string
+	FilePath string
+}
+
 type cnf struct {
 	session *session.Session
 	client  client.HttpClient
@@ -62,13 +67,38 @@ func (s *cnf) UpdateEnvVars(in *ServerConfigUpdateEnvVarsInput) (*client.Respons
 		return nil, nil, errors.New("error in payload init")
 	}
 
-	rm := json.RawMessage(env)
-	payload, err := json.Marshal(&rm)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "marshal for env failed")
+	return s.sendUpdates(in.StackId, env)
+}
+
+func (s *cnf) UpdateFilePath(in *ServerConfigUpdateFilePathInput) (*client.Response, []byte, error) {
+	if in == nil {
+		return nil, nil, errors.New("input cannot be nil")
 	}
 
-	ep := s.session.ApiEndpoint() + `/alm/serverconfig?stack_id=` + in.StackId
+	if in.StackId == "" {
+		return nil, nil, errors.New("stack id cannot be empty")
+	}
+
+	if in.FilePath == "" {
+		return nil, nil, errors.New("empty filepath")
+	}
+
+	fp := s.buildFilePathPayload(in.StackId, in.FilePath)
+	if fp == "" {
+		return nil, nil, errors.New("error in payload init")
+	}
+
+	return s.sendUpdates(in.StackId, fp)
+}
+
+func (s *cnf) sendUpdates(id, in string) (*client.Response, []byte, error) {
+	rm := json.RawMessage(in)
+	payload, err := json.Marshal(&rm)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "marshal failed")
+	}
+
+	ep := s.session.ApiEndpoint() + `/alm/serverconfig?stack_id=` + id
 	req, err := http.NewRequest(http.MethodPut, ep, bytes.NewBuffer(payload))
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "new request failed")
@@ -114,6 +144,10 @@ func (s *cnf) buildEnvPayload(id, env string) string {
 	}
 
 	return payload
+}
+
+func (s *cnf) buildFilePathPayload(id, fp string) string {
+	return `{"stack_id":"` + id + `","filepath":"` + fp + `"}`
 }
 
 func New(s *session.Session) *cnf {
