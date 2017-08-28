@@ -3,6 +3,7 @@ package alm
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -60,20 +61,25 @@ func TestListDevAcct(t *testing.T) {
 		})
 
 		alm := New(sess)
-		_, _, err := alm.List()
-		if err != nil {
-			t.Errorf("Expecting nil error, received %v", err)
-		}
-
-		// latest api
-		sess, _ = session.New(&session.Config{BaseApiUrl: "https://apidev.mobingi.com"})
-		alm = New(sess)
 		resp, body, err := alm.List()
 		if err != nil {
 			t.Errorf("Expecting nil error, received %v", err)
 		}
 
-		_, _ = resp, body
+		log.Println(resp)
+		log.Println(string(body))
+
+		// latest api
+		sess, _ = session.New(&session.Config{BaseApiUrl: "https://apidev.mobingi.com"})
+		alm = New(sess)
+		resp, body, err = alm.List()
+		if err != nil {
+			t.Errorf("Expecting nil error, received %v", err)
+		}
+
+		log.Println(resp)
+		log.Println(string(body))
+		// _, _ = resp, body
 	}
 }
 

@@ -85,9 +85,13 @@ func (s *Session) getAccessToken() (string, error) {
 
 	r.Header.Add("Content-Type", "application/json")
 	c := client.NewSimpleHttpClient()
-	_, body, err := c.Do(r)
+	resp, body, err := c.Do(r)
 	if err != nil {
 		return token, errors.Wrap(err, "do failed")
+	}
+
+	if (resp.StatusCode / 100) != 2 {
+		return token, errors.New(resp.Status)
 	}
 
 	var m map[string]interface{}
