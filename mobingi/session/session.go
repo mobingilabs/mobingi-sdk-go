@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	BASE_API_URL      = "https://alm.mobingi.com"
+	BASE_API_URL      = "https://api.mobingi.com"
 	BASE_REGISTRY_URL = "https://registry.mobingi.com"
 )
 

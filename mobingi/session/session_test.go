@@ -25,7 +25,7 @@ func TestNewSession(t *testing.T) {
 	}
 
 	s4, _ := New(&Config{ApiVersion: 3})
-	if s4.ApiEndpoint() != "https://alm.mobingi.com/v3" {
+	if s4.ApiEndpoint() != "https://api.mobingi.com/v3" {
 		t.Errorf("Invalid api url")
 	}
 }
