@@ -53,7 +53,7 @@ type StackCreateConfig struct {
 
 type AlmTemplate struct {
 	Version     string
-	ContentType string
+	ContentType string // json, yaml
 	Contents    string
 }
 
@@ -233,8 +233,18 @@ func (s *stack) createStackV2(in *StackCreateInput) (*client.Response, []byte, e
 }
 
 func (s *stack) createAlmStack(in *StackCreateInput) (*client.Response, []byte, error) {
+	var ct string
 	if in.AlmTemplate.Contents == "" {
 		return nil, nil, errors.New("contents cannot be empty")
+	}
+
+	switch in.AlmTemplate.ContentType {
+	case "json":
+		ct = "application/json"
+	case "yaml":
+		ct = "application/x-yaml" // same with Ruby on Rails
+	default:
+		return nil, nil, errors.New("invalid content type; should be json or yaml")
 	}
 
 	ep := s.session.ApiEndpoint() + "/alm/template"
@@ -244,7 +254,7 @@ func (s *stack) createAlmStack(in *StackCreateInput) (*client.Response, []byte, 
 	}
 
 	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
+	req.Header.Add("Content-Type", ct)
 	return s.client.Do(req)
 }
 
