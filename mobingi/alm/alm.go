@@ -176,6 +176,29 @@ func (s *stack) Delete(in *StackDeleteInput) (*client.Response, []byte, error) {
 	return s.client.Do(req)
 }
 
+type GetTemplateVersionsInput struct {
+	StackId string
+}
+
+func (s *stack) GetTemplateVersions(in *GetTemplateVersionsInput) (*client.Response, []byte, error) {
+	if in == nil {
+		return nil, nil, errors.New("input cannot be nil")
+	}
+
+	if in.StackId == "" {
+		return nil, nil, errors.New("stack id cannot be empty")
+	}
+
+	ep := s.session.ApiEndpoint() + "/alm/template?stack_id=" + in.StackId
+	req, err := http.NewRequest(http.MethodGet, ep, nil)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "new request failed")
+	}
+
+	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
+	return s.client.Do(req)
+}
+
 func (s *stack) getCredsList(vendor string) ([]credentials.VendorCredentials, error) {
 	creds := credentials.New(s.session)
 	_, body, err := creds.List(&credentials.CredentialsListInput{
