@@ -6,8 +6,9 @@ import (
 )
 
 func TestSetGet(t *testing.T) {
-	Set("mobingi-sdk-go", "mobingi-sdk-go", "user", "password")
-	user, secret, err := Get("localhost")
+	url := "https://github.com/mobingilabs/mobingi-sdk-go"
+	Set("mobingi-sdk-go", url, "user", "password")
+	user, secret, err := Get(url)
 	if err == nil {
 		if user != "user" {
 			t.Errorf("Expecting user, got %s", user)
