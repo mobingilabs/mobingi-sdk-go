@@ -1,3 +1,3 @@
 package nativestore
 
-var ns = interface{}
+var ns interface{}
