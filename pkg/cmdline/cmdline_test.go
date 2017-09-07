@@ -7,3 +7,9 @@ func TestArgs0(t *testing.T) {
 		t.Fatal("expected a name")
 	}
 }
+
+func TestDir(t *testing.T) {
+	if Dir() == "" {
+		t.Fatal("expected a dir")
+	}
+}
