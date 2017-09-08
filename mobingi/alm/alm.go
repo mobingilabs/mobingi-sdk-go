@@ -322,6 +322,10 @@ func (s *stack) GetPem(in *GetPemInput) (*client.Response, []byte, []byte, error
 		return resp, body, pem, errors.Wrap(err, "read failed")
 	}
 
+	if r.StatusCode/100 != 2 {
+		return resp, body, pem, errors.New(r.Status)
+	}
+
 	return resp, body, pem, nil
 }
 
