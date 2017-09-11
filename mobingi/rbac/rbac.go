@@ -7,6 +7,7 @@ import (
 
 	"github.com/mobingilabs/mobingi-sdk-go/client"
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/session"
+	"github.com/mobingilabs/mobingi-sdk-go/pkg/debug"
 	"github.com/pkg/errors"
 )
 
@@ -55,6 +56,10 @@ func (r *rbac) CreateRole(in *CreateRoleInput) (*client.Response, []byte, error)
 	p, err := json.Marshal(in)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "marshal failed")
+	}
+
+	if r.session.Config.HttpClientConfig.Verbose {
+		debug.Info("[BODY]", string(p))
 	}
 
 	ep := r.session.ApiEndpoint() + "/role"
