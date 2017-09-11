@@ -78,6 +78,29 @@ func (r *rbac) CreateRole(in *CreateRoleInput) (*client.Response, []byte, error)
 	return r.client.Do(req)
 }
 
+type DeleteRoleInput struct {
+	RoleId string
+}
+
+func (r *rbac) DeleteRole(in *DeleteRoleInput) (*client.Response, []byte, error) {
+	if in == nil {
+		return nil, nil, errors.New("input cannot be nil")
+	}
+
+	if in.RoleId == "" {
+		return nil, nil, errors.New("role id cannot be empty")
+	}
+
+	ep := r.session.ApiEndpoint() + "/role/" + in.RoleId
+	req, err := http.NewRequest(http.MethodDelete, ep, nil)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "new request failed")
+	}
+
+	req.Header.Add("Authorization", "Bearer "+r.session.AccessToken)
+	return r.client.Do(req)
+}
+
 func New(s *session.Session) *rbac {
 	if s == nil {
 		return nil
