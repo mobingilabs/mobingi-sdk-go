@@ -89,7 +89,7 @@ func (r *rbac) CreateRole(in *CreateRoleInput) (*client.Response, []byte, error)
 	}
 
 	if r.session.Config.HttpClientConfig.Verbose {
-		debug.Info("[QUERY]", req.URL.RawQuery)
+		debug.Info("[BODY]", string(payload))
 	}
 
 	req.Header.Add("Authorization", "Bearer "+r.session.AccessToken)
