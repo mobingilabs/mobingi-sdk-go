@@ -54,26 +54,6 @@ func (r *rbac) CreateRole(in *CreateRoleInput) (*client.Response, []byte, error)
 		return nil, nil, errors.New("name cannot be empty")
 	}
 
-	p, err := json.Marshal(in)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "marshal failed")
-	}
-
-	if r.session.Config.HttpClientConfig.Verbose {
-		debug.Info("[BODY]", string(p))
-	}
-
-	ep := r.session.ApiEndpoint() + "/role"
-	/*
-		req, err := http.NewRequest(http.MethodPost, ep, bytes.NewBuffer(p))
-		if err != nil {
-			return nil, nil, errors.Wrap(err, "new request failed")
-		}
-
-		req.Header.Add("Authorization", "Bearer "+r.session.AccessToken)
-		req.Header.Add("Content-Type", "application/json")
-	*/
-
 	rb, err := json.Marshal(in.Scope)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "marshal role failed")
@@ -83,6 +63,7 @@ func (r *rbac) CreateRole(in *CreateRoleInput) (*client.Response, []byte, error)
 	v.Set("name", in.Name)
 	v.Set("scope", string(rb))
 	payload := []byte(v.Encode())
+	ep := r.session.ApiEndpoint() + "/role"
 	req, err := http.NewRequest(http.MethodPost, ep, bytes.NewBuffer(payload))
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "new request failed")
