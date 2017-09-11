@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
+	"net/url"
 
 	"github.com/mobingilabs/mobingi-sdk-go/client"
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/session"
@@ -63,13 +64,32 @@ func (r *rbac) CreateRole(in *CreateRoleInput) (*client.Response, []byte, error)
 	}
 
 	ep := r.session.ApiEndpoint() + "/role"
-	req, err := http.NewRequest(http.MethodPost, ep, bytes.NewBuffer(p))
+	/*
+		req, err := http.NewRequest(http.MethodPost, ep, bytes.NewBuffer(p))
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "new request failed")
+		}
+
+		req.Header.Add("Authorization", "Bearer "+r.session.AccessToken)
+		req.Header.Add("Content-Type", "application/json")
+	*/
+
+	rb, err := json.Marshal(in.Scope)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "marshal role failed")
+	}
+
+	v := url.Values{}
+	v.Set("name", in.Name)
+	v.Set("scope", string(rb))
+	payload := []byte(v.Encode())
+	req, err := http.NewRequest(http.MethodPost, ep, bytes.NewBuffer(payload))
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "new request failed")
 	}
 
 	req.Header.Add("Authorization", "Bearer "+r.session.AccessToken)
-	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
 	return r.client.Do(req)
 }
 
