@@ -88,6 +88,10 @@ func (r *rbac) CreateRole(in *CreateRoleInput) (*client.Response, []byte, error)
 		return nil, nil, errors.Wrap(err, "new request failed")
 	}
 
+	if r.session.Config.HttpClientConfig.Verbose {
+		debug.Info("[QUERY]", req.URL.RawQuery)
+	}
+
 	req.Header.Add("Authorization", "Bearer "+r.session.AccessToken)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
 	return r.client.Do(req)
