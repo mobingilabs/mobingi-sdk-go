@@ -5,8 +5,8 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	url := &SeshaClientInput{URL: "https://sesha3.labs.mobingi.com:32914/6h6fcxo233gby42bdvu93nzhl3rgorq6t7yd/"}
-	cli, _ := New(url)
-	err := cli.Run()
+	url := &SeshaClientInput{URL: "https://sesha3.labs.mobingi.com:8568/d3aiwuxow4mxnsgc4j7usvcpw0bjh27kg94c/"}
+	sesha3cli, _ := New(url)
+	err := sesha3cli.Run()
 	_ = err
 }
