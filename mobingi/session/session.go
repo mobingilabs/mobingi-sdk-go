@@ -20,8 +20,8 @@ type authPayload struct {
 	ClientId     string      `json:"client_id,omitempty"`
 	ClientSecret string      `json:"client_secret,omitempty"`
 	GrantType    string      `json:"grant_type,omitempty"`
-	Username     interface{} `json:"client_secret,omitempty"`
-	Password     interface{} `json:"client_secret,omitempty"`
+	Username     interface{} `json:"username,omitempty"`
+	Password     interface{} `json:"password,omitempty"`
 }
 
 type Config struct {
