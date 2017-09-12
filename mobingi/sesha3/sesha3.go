@@ -29,5 +29,6 @@ func New(in *SeshaClientInput) (ret *Creds, err error) {
 
 func (c *Creds) Run() (err error) {
 	err = c.client.Loop()
+	err = errors.Wrap(err, "can't connect sesha3")
 	return err
 }
