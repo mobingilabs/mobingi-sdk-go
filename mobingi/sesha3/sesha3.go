@@ -9,25 +9,25 @@ type SeshaClientInput struct {
 	URL string
 }
 
-type Creds struct {
+type sesha3Client struct {
 	client *gottyclient.Client
 }
 
-func New(in *SeshaClientInput) (*Creds, error) {
+func NewClient(in *SeshaClientInput) (*sesha3Client, error) {
 	var err error
 	if len(in.URL) < 1 {
 		err = errors.Wrap(err, "url should not be empty")
-		return &Creds{}, err
+		return &sesha3Client{}, err
 	}
 	client, err := gottyclient.NewClient(in.URL)
 	if err != nil {
 		err = errors.Wrap(err, "sesha3 client creation failed")
-		return &Creds{}, err
+		return &sesha3Client{}, err
 	}
-	return &Creds{client: client}, err
+	return &sesha3Client{client: client}, err
 }
 
-func (c *Creds) Run() error {
+func (c *sesha3Client) Run() error {
 	err := c.client.Loop()
 	err = errors.Wrap(err, "can't connect sesha3")
 	return err
