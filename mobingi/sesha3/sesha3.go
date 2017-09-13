@@ -29,6 +29,8 @@ func NewClient(in *SeshaClientInput) (*sesha3Client, error) {
 
 func (c *sesha3Client) Run() error {
 	err := c.client.Loop()
-	err = errors.Wrap(err, "can't connect sesha3")
+	if err != nil {
+		err = errors.Wrap(err, "can't connect sesha3")
+	}
 	return err
 }
