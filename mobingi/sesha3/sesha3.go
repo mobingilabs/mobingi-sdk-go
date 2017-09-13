@@ -17,12 +17,12 @@ func NewClient(in *SeshaClientInput) (*sesha3Client, error) {
 	var err error
 	if len(in.URL) < 1 {
 		err = errors.Wrap(err, "url should not be empty")
-		return &sesha3Client{}, err
+		return nil, err
 	}
 	client, err := gottyclient.NewClient(in.URL)
 	if err != nil {
 		err = errors.Wrap(err, "sesha3 client creation failed")
-		return &sesha3Client{}, err
+		return nil, err
 	}
 	return &sesha3Client{client: client}, err
 }
