@@ -12,5 +12,6 @@ func GetFreePort() (int, error) {
 		return -1, errors.Wrap(err, "listen failed")
 	}
 
+	defer l.Close()
 	return l.Addr().(*net.TCPAddr).Port, nil
 }
