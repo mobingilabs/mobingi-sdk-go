@@ -55,12 +55,12 @@ func (r *registry) GetUserCatalog(in *GetUserCatalogInput) (*client.Response, []
 	}
 
 	var ct catalog
-	ret := make([]string, 0)
 	err = json.Unmarshal(body, &ct)
 	if err != nil {
 		return resp, nil, nil, errors.Wrap(err, "unmarshal failed")
 	}
 
+	ret := make([]string, 0)
 	for _, v := range ct.Repositories {
 		pair := strings.Split(v, "/")
 		if len(pair) == 2 {
