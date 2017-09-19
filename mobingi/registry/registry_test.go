@@ -7,7 +7,28 @@ import (
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/session"
 )
 
-func TestGetRegistryToken(t *testing.T) {
+func TestGetUserCatalogDevAcct(t *testing.T) {
+	return
+	if os.Getenv("MOBINGI_CLIENT_ID") != "" && os.Getenv("MOBINGI_CLIENT_SECRET") != "" &&
+		os.Getenv("MOBINGI_USERNAME") != "" && os.Getenv("MOBINGI_PASSWORD") != "" {
+		sess, _ := session.New(&session.Config{
+			BaseApiUrl:      "https://apidev.mobingi.com",
+			BaseRegistryUrl: "https://dockereg2.labs.mobingi.com",
+		})
+
+		reg := New(sess)
+		in := &GetUserCatalogInput{}
+		resp, body, list, err := reg.GetUserCatalog(in)
+		if err != nil {
+			t.Errorf("expecting nil error, received %v", err)
+		}
+
+		// log.Println(resp, string(body), list)
+		_, _, _ = resp, body, list
+	}
+}
+
+func TestGetRegistryTokenDevAcct(t *testing.T) {
 	return
 	if os.Getenv("MOBINGI_CLIENT_ID") != "" && os.Getenv("MOBINGI_CLIENT_SECRET") != "" &&
 		os.Getenv("MOBINGI_USERNAME") != "" && os.Getenv("MOBINGI_PASSWORD") != "" {
@@ -25,6 +46,7 @@ func TestGetRegistryToken(t *testing.T) {
 			t.Errorf("expecting nil error, received %v", err)
 		}
 
+		// log.Println(resp.Status, string(body), token)
 		_, _, _ = resp, body, token
 	}
 }

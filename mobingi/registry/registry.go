@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/mobingilabs/mobingi-sdk-go/client"
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/session"
@@ -14,6 +15,62 @@ import (
 type registry struct {
 	session *session.Session
 	client  client.HttpClient
+}
+
+type GetUserCatalogInput struct {
+	Service string
+	Scope   string
+}
+
+func (r *registry) GetUserCatalog(in *GetUserCatalogInput) (*client.Response, []byte, []string, error) {
+	if in == nil {
+		return nil, nil, nil, errors.New("input cannot be nil")
+	}
+
+	if in.Service == "" {
+		in.Service = "Mobingi Docker Registry"
+	}
+
+	tokenIn := &GetRegistryTokenInput{
+		Service: in.Service,
+		Scope:   "registry:catalog:*",
+	}
+
+	resp, body, token, err := r.GetRegistryToken(tokenIn)
+	if err != nil {
+		return resp, body, nil, errors.Wrap(err, "get token failed")
+	}
+
+	r.session.AccessToken = token
+	ep := r.session.RegistryEndpoint() + "/_catalog"
+	req, err := http.NewRequest(http.MethodGet, ep, nil)
+	req.Header.Add("Authorization", "Bearer "+r.session.AccessToken)
+	resp, body, err = r.client.Do(req)
+	if err != nil {
+		return resp, body, nil, errors.Wrap(err, "client do failed")
+	}
+
+	type catalog struct {
+		Repositories []string `json:"repositories"`
+	}
+
+	var ct catalog
+	ret := make([]string, 0)
+	err = json.Unmarshal(body, &ct)
+	if err != nil {
+		return resp, nil, nil, errors.Wrap(err, "unmarshal failed")
+	}
+
+	for _, v := range ct.Repositories {
+		pair := strings.Split(v, "/")
+		if len(pair) == 2 {
+			if pair[0] == r.session.Config.Username {
+				ret = append(ret, v)
+			}
+		}
+	}
+
+	return resp, nil, ret, nil
 }
 
 type GetRegistryTokenInput struct {
