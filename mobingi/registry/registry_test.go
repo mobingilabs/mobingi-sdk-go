@@ -85,12 +85,12 @@ func TestGetTagDigestDevAcct(t *testing.T) {
 		})
 
 		reg := New(sess)
-		in := &GetTagDigestInput{
+		in := &GetTagManifestInput{
 			Image: "hello",
 			Tag:   "latest",
 		}
 
-		resp, body, err := reg.GetTagDigest(in)
+		resp, body, err := reg.GetTagManifest(in)
 		if err != nil {
 			t.Errorf("expecting nil error, received %v", err)
 		}

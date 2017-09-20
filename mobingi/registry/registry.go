@@ -161,14 +161,14 @@ func (r *registry) GetTagsList(in *GetTagsListInput) (*client.Response, []byte, 
 	return resp, body, nil
 }
 
-type GetTagDigestInput struct {
+type GetTagManifestInput struct {
 	Service string
 	Scope   string
 	Image   string
 	Tag     string
 }
 
-func (r *registry) GetTagDigest(in *GetTagDigestInput) (*client.Response, []byte, error) {
+func (r *registry) GetTagManifest(in *GetTagManifestInput) (*client.Response, []byte, error) {
 	if in == nil {
 		return nil, nil, errors.New("input cannot be nil")
 	}
