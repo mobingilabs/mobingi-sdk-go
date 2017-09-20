@@ -1,5 +1,5 @@
 package nativestore
 
-import "github.com/docker/docker-credential-helpers/secretservice"
+import "github.com/docker/docker-credential-helpers/pass"
 
-var ns = secretservice.Secretservice{}
+var ns = pass.Pass{}
