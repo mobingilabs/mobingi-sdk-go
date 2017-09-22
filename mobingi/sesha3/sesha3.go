@@ -110,11 +110,11 @@ func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte
 		username string
 		passwd   string
 	}
-	payload_token := payload_t{
+	payload_token := payload_token_t{
 		username: s.session.Config.Username,
 		passwd:   s.session.Config.Password,
 	}
-	b, err := json.Marshal(payload)
+	b, err := json.Marshal(payload_token)
 	if err != nil {
 		return resp, body, u, errors.Wrap(err, "payload_token marshal failed")
 	}
@@ -151,13 +151,13 @@ func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte
 		Timeout: fmt.Sprintf("%v", in.Timeout),
 	}
 
-	b, err := json.Marshal(payload)
+	b, err = json.Marshal(payload)
 	if err != nil {
 		return resp, body, u, errors.Wrap(err, "payload marshal failed")
 	}
 
-	ep := "https://sesha3.labs.mobingi.com/ttyurl"
-	req, err := http.NewRequest(http.MethodGet, ep, bytes.NewBuffer(b))
+	ep = "https://sesha3.labs.mobingi.com/ttyurl"
+	req, err = http.NewRequest(http.MethodGet, ep, bytes.NewBuffer(b))
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", token)
 	resp, body, err = s.client.Do(req)
