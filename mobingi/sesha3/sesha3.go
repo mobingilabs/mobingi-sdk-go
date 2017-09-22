@@ -57,8 +57,6 @@ type GetSessionUrlInput struct {
 	IpAddr   string
 	InstUser string
 	Timeout  int64
-	AlmUser  string
-	AlmPass  string
 }
 
 func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte, string, error) {
@@ -113,8 +111,8 @@ func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte
 		passwd   string
 	}
 	payload_token := payload_t{
-		username: in.AlmUser,
-		passwd:   in.AlmPass,
+		username: s.session.Config.Username,
+		passwd:   s.session.Config.Password,
 	}
 	b, err := json.Marshal(payload)
 	if err != nil {
