@@ -57,6 +57,8 @@ type GetSessionUrlInput struct {
 	IpAddr   string
 	InstUser string
 	Timeout  int64
+	AlmUser  string
+	AlmPass  string
 }
 
 func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte, string, error) {
@@ -105,6 +107,36 @@ func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte
 
 	pemurl := strings.Replace(ru.Data, "\\", "", -1)
 
+	//get sesha3 token
+	type payload_token_t struct {
+		username string
+		passwd   string
+	}
+	payload_token := payload_t{
+		username: in.AlmUser,
+		passwd:   in.AlmPass,
+	}
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "payload_token marshal failed")
+	}
+	ep := "https://sesha3.labs.mobingi.com/token"
+	req, err := http.NewRequest(http.MethodGet, ep, bytes.NewBuffer(b))
+	req.Header.Add("Content-Type", "application/json")
+	resp, body, err = s.client.Do(req)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "client do failed")
+	}
+	var m map[string]string
+	err = json.Unmarshal(body, &m)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "sesha3 token reply unmarshal failed")
+	}
+	token, ok := m["key"]
+	if !ok {
+		return resp, body, u, errors.Wrap(err, "can't find token")
+	}
+
 	type payload_t struct {
 		Pem     string `json:"pem"`
 		StackId string `json:"stackid"`
@@ -129,6 +161,7 @@ func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte
 	ep := "https://sesha3.labs.mobingi.com/ttyurl"
 	req, err := http.NewRequest(http.MethodGet, ep, bytes.NewBuffer(b))
 	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", token)
 	resp, body, err = s.client.Do(req)
 	if err != nil {
 		return resp, body, u, errors.Wrap(err, "client do failed")
