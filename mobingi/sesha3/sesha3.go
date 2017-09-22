@@ -159,7 +159,7 @@ func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte
 	ep = "https://sesha3.labs.mobingi.com/ttyurl"
 	req, err = http.NewRequest(http.MethodGet, ep, bytes.NewBuffer(b))
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", token)
+	req.Header.Add("Authorization", "Bearer "+token)
 	resp, body, err = s.client.Do(req)
 	if err != nil {
 		return resp, body, u, errors.Wrap(err, "client do failed")
