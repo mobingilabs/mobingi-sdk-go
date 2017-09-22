@@ -218,7 +218,7 @@ func (r *registry) DeleteImage(in *DeleteImageInput) (*client.Response, []byte, 
 
 	values := url.Values{}
 	values.Add("image_id", r.session.Config.Username+"/"+in.Image)
-	ep := r.session.ApiEndpoint() + `/alm/registry/image?image_id=` + in.Image
+	ep := r.session.ApiEndpoint() + `/alm/registry/image`
 	req, err := http.NewRequest(http.MethodDelete, ep, nil)
 	req.URL.RawQuery = values.Encode()
 	req.Header.Add("Authorization", "Bearer "+r.session.AccessToken)
