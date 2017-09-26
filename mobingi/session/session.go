@@ -84,6 +84,16 @@ func (s *Session) Sesha3Endpoint() string {
 	return s.Config.Sesha3Url
 }
 
+func (s *Session) SimpleAuthGetRequest(u string) *http.Request {
+	req, err := http.NewRequest(http.MethodGet, u, nil)
+	if err != nil {
+		return nil
+	}
+
+	req.Header.Add("Authorization", "Bearer "+s.AccessToken)
+	return req
+}
+
 func (s *Session) getAccessToken() (string, error) {
 	var token string
 	var p authPayload

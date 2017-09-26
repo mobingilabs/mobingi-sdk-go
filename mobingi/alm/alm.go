@@ -59,12 +59,8 @@ type stack struct {
 }
 
 func (s *stack) List() (*client.Response, []byte, error) {
-	req, err := http.NewRequest(http.MethodGet, s.session.ApiEndpoint()+"/alm/stack", nil)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "new request failed")
-	}
-
-	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
+	ep := s.session.ApiEndpoint() + "/alm/stack"
+	req := s.session.SimpleAuthGetRequest(ep)
 	return s.client.Do(req)
 }
 
