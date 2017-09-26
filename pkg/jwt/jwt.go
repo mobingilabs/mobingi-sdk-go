@@ -5,29 +5,58 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"io/ioutil"
 	"os"
+	"time"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/debug"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/private"
 	"github.com/pkg/errors"
 )
 
+type CustomClaims struct {
+	Username string
+	Passwd   string
+	jwt.StandardClaims
+}
+
 type jwtctx struct {
 	name    string
 	rsa     string
 	pub     []byte
-	cred    interface{}
 	User    string
 	PemPub  string
 	PemPriv string
 	Reuse   bool
 }
 
+func (j *jwtctx) GenerateToken() (*jwt.Token, string, error) {
+	var clms CustomClaims
+	var stoken string
+
+	expire := time.Hour * 24
+	clms.ExpiresAt = time.Now().Add(expire).Unix()
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS512"), clms)
+	defkey, err := ioutil.ReadFile(j.PemPriv)
+	if err != nil {
+		return token, stoken, errors.Wrap(err, "readfile failed")
+	}
+
+	key, err := jwt.ParseRSAPrivateKeyFromPEM(defkey)
+	if err != nil {
+		return token, stoken, errors.Wrap(err, "parse priv key from pem failed")
+	}
+
+	stoken, err = token.SignedString(key)
+	return token, stoken, nil
+}
+
 func NewCtx(user string) (*jwtctx, error) {
 	var ctx jwtctx
 
 	tmpdir := os.TempDir() + "/token/rsa/"
-	debug.Info(tmpdir)
+	debug.Info("tmp:", tmpdir)
 	ctx.User = user
 	ctx.PemPub = tmpdir + user + ".pem.pub"
 	ctx.PemPriv = tmpdir + user + ".pem"
