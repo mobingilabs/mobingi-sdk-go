@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 
@@ -84,8 +85,8 @@ func (s *Session) Sesha3Endpoint() string {
 	return s.Config.Sesha3Url
 }
 
-func (s *Session) SimpleAuthGetRequest(u string) *http.Request {
-	req, err := http.NewRequest(http.MethodGet, u, nil)
+func (s *Session) SimpleAuthRequest(m, u string, body io.Reader) *http.Request {
+	req, err := http.NewRequest(m, u, body)
 	if err != nil {
 		return nil
 	}
