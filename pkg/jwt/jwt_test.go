@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewCtx(t *testing.T) {
-	ctx, err := NewCtx("user")
+	ctx, err := NewCtx()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -14,16 +14,10 @@ func TestNewCtx(t *testing.T) {
 	if ctx == nil {
 		t.Fatal("should not be nil")
 	}
-
-	if ctx.User != "user" {
-		t.Fatalf("expected user, got:", ctx.User)
-	}
-
-	log.Println("reuse:", ctx.Reuse)
 }
 
 func TestGenerateToken(t *testing.T) {
-	ctx, _ := NewCtx("user")
+	ctx, _ := NewCtx()
 	token, stoken, _ := ctx.GenerateToken()
 	if token == nil {
 		t.Fatal("should not be nil")
