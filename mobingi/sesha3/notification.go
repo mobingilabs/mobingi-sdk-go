@@ -1,5 +1,5 @@
 package sesha3
 
-func Err() {
-
+type Notificate struct {
+	slack bool
 }
