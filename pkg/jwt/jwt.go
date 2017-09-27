@@ -84,20 +84,18 @@ func (j *jwtctx) GenerateToken(data map[string]interface{}) (*jwt.Token, string,
 	var claims WrapperClaims
 
 	claims.Data = data
-	expire := time.Hour * 24
-	claims.ExpiresAt = time.Now().Add(expire).Unix()
+	claims.ExpiresAt = time.Now().Add(time.Hour * 24).Unix()
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS512"), claims)
-	defkey, err := ioutil.ReadFile(j.PemPrv)
-	if err != nil {
-		return token, stoken, errors.Wrap(err, "readfile failed")
-	}
-
-	key, err := jwt.ParseRSAPrivateKeyFromPEM(defkey)
+	key, err := jwt.ParseRSAPrivateKeyFromPEM(j.Prv)
 	if err != nil {
 		return token, stoken, errors.Wrap(err, "parse priv key from pem failed")
 	}
 
 	stoken, err = token.SignedString(key)
+	if err != nil {
+		return token, stoken, errors.Wrap(err, "signed string failed")
+	}
+
 	return token, stoken, nil
 }
 

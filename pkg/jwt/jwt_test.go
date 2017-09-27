@@ -21,7 +21,7 @@ func TestGenerateToken(t *testing.T) {
 	ctx, _ := NewCtx()
 	claims := make(map[string]interface{})
 	claims["username"] = "user"
-	token, stoken, _ := ctx.GenerateToken(claims)
+	token, stoken, _ := ctx.GenerateToken(nil)
 	if token == nil {
 		t.Fatal("should not be nil")
 	}
@@ -41,6 +41,10 @@ func TestParseToken(t *testing.T) {
 	pt, err := ctx.ParseToken(stoken)
 	if err != nil {
 		t.Fatal("should succeed; got:", err)
+	}
+
+	if !pt.Valid {
+		t.Fatal("should be a valid token")
 	}
 
 	nc := pt.Claims.(*WrapperClaims)
