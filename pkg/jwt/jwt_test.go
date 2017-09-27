@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"fmt"
 	"log"
 	"testing"
 )
@@ -18,10 +19,37 @@ func TestNewCtx(t *testing.T) {
 
 func TestGenerateToken(t *testing.T) {
 	ctx, _ := NewCtx()
-	token, stoken, _ := ctx.GenerateToken()
+	claims := make(map[string]interface{})
+	claims["username"] = "user"
+	token, stoken, _ := ctx.GenerateToken(claims)
 	if token == nil {
 		t.Fatal("should not be nil")
 	}
 
 	log.Println(token, stoken)
+}
+
+func TestParseToken(t *testing.T) {
+	ctx, _ := NewCtx()
+	claims := make(map[string]interface{})
+	claims["username"] = "user"
+	token, stoken, _ := ctx.GenerateToken(claims)
+	if token == nil {
+		t.Fatal("should not be nil")
+	}
+
+	pt, err := ctx.ParseToken(stoken)
+	if err != nil {
+		t.Fatal("should succeed; got:", err)
+	}
+
+	nc := pt.Claims.(*WrapperClaims)
+	u, ok := nc.Data["username"]
+	if !ok {
+		t.Fatal("should have a username entry")
+	}
+
+	if fmt.Sprintf("%s", u) != "user" {
+		t.Fatal("should be user")
+	}
 }
