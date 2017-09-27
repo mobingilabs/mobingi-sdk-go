@@ -117,33 +117,6 @@ func (j *jwtctx) ParseToken(token string) (*jwt.Token, error) {
 	})
 }
 
-/*
-func (j *jwtctx) ValidateToken(token string) (*jwt.Token, string, error) {
-	parsedToken, _ := parseTokenTxt(token)
-	d.Info(parsedToken)
-	claims := *parsedToken.Claims.(*tokenReq)
-	payload := ""
-	token_user := claims.Username
-	token_pass := fmt.Sprintf("%x", md5.Sum([]byte(claims.Passwd)))
-	d.Info("token_user:", token_user)
-	d.Info("token_pass:", "xxxxx")
-
-	tf := false
-	if parsedToken.Valid {
-		payload = fmt.Sprint("your token is valid :", parsedToken.Valid)
-		tf = true
-	} else {
-		payload = fmt.Sprint("your token is not valid :", parsedToken.Valid)
-	}
-	d.Info("token_check:" + payload)
-	tf, err := CheckToken(credential, awsRegion, token_user, token_pass)
-	if tf == false {
-		payload = fmt.Sprint("your username or password is not valid ", err)
-	}
-	return tf, payload
-}
-*/
-
 func NewCtx() (*jwtctx, error) {
 	if !rsainit {
 		return nil, errors.New("failed in rsa init")
