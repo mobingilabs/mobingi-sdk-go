@@ -17,7 +17,6 @@ install:
   - go env
 
 build: false
-deploy: false
 
 test_script:
   - for /f "" %%G in ('go list github.com/mobingilabs/mobingi-sdk-go/... ^| find /i /v "/vendor/"') do (go test -v %%G -cover & IF ERRORLEVEL == 1 EXIT 1)
