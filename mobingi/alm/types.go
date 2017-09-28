@@ -2,16 +2,24 @@ package alm
 
 import "encoding/json"
 
+type Configurations struct {
+	Role      string      `json:"role,omitempty"`
+	Flag      string      `json:"flag,omitempty"`
+	Provision interface{} `json:"provision,omitempty"`
+	Container interface{} `json:"container,omitempty"`
+}
+
 // Changes:
 //
 // 2017-07-18:
 //   - Max, MaxOrigin, Min, MinOrigin - changed to int (we still need to support old string)
 type Configuration struct {
 	// v3
-	Description string          `json:"description,omitempty"`
-	Label       string          `json:"label,omitempty"`
-	Version     string          `json:"version,omitempty"`
-	Vendor      json.RawMessage `json:"vendor,omitempty"`
+	Description    string          `json:"description,omitempty"`
+	Label          string          `json:"label,omitempty"`
+	Version        string          `json:"version,omitempty"`
+	Vendor         json.RawMessage `json:"vendor,omitempty"`
+	Configurations json.RawMessage `json:"configurations,omitempty"`
 	// v2
 	AWS                 string      `json:"AWS,omitempty"`
 	AWSAccountName      string      `json:"AWS_ACCOUNT_NAME,omitempty"`
