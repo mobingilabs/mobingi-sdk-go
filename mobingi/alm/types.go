@@ -81,6 +81,9 @@ type State struct {
 }
 
 type Instance struct {
+	// v3
+	Status interface{} `json:"Status,omitempty"`
+	// v2
 	AmiLaunchIndex        string          `json:"AmiLaunchIndex,omitempty"`
 	Architecture          string          `json:"Architecture,omitempty"`
 	BlockDeviceMappings   interface{}     `json:"BlockDeviceMappings,omitempty"`
