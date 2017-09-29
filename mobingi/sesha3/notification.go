@@ -17,8 +17,8 @@ import (
 type Notificate struct {
 	Slack  bool
 	client client.HttpClient
-	cred   string
-	region string
+	Cred   string
+	Region string
 }
 
 type Event struct {
@@ -28,8 +28,8 @@ type Event struct {
 
 func (w *Notificate) dynamoget(key string) (string, error) {
 	var results []Event
-	cred := credentials.NewSharedCredentials("/root/.aws/credentials", w.cred)
-	db := dynamo.New(session.New(), &aws.Config{Region: aws.String(w.region),
+	cred := credentials.NewSharedCredentials("/root/.aws/credentials", w.Cred)
+	db := dynamo.New(session.New(), &aws.Config{Region: aws.String(w.Region),
 		Credentials: cred,
 	})
 	table := db.Table("SESHA3")
