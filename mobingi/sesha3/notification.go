@@ -26,7 +26,7 @@ type Event struct {
 	Slack  string `dynamo:"slack"`
 }
 
-func (w *Notificate) dynamoget(key string) (string, error) {
+func (w *Notificate) Dynamoget(key string) (string, error) {
 	var results []Event
 	cred := credentials.NewSharedCredentials("/root/.aws/credentials", w.Cred)
 	db := dynamo.New(session.New(), &aws.Config{Region: aws.String(w.Region),
@@ -48,7 +48,7 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 	//webhook URLs
 	log.Println("start get slack url")
 	if w.Slack {
-		slackURL, _ := w.dynamoget("slack")
+		slackURL, _ := w.Dynamoget("slack")
 		urls = append(urls, slackURL)
 	}
 
