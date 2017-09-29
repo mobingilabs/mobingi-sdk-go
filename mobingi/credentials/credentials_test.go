@@ -21,10 +21,13 @@ func TestNew(t *testing.T) {
 
 func TestUserDevAcct(t *testing.T) {
 	return
-	if os.Getenv("MOBINGI_TESTADD_CLIENT_ID") != "" && os.Getenv("MOBINGI_TESTADD_CLIENT_SECRET") != "" {
+	if os.Getenv("MOBINGI_ROOT_USERNAME") != "" && os.Getenv("MOBINGI_ROOT_PASSWORD") != "" {
+		// if os.Getenv("MOBINGI_USERNAME") != "" && os.Getenv("MOBINGI_PASSWORD") != "" {
 		sess, _ := session.New(&session.Config{
-			Username:         os.Getenv("MOBINGI_ROOT_USERNAME"),
-			Password:         os.Getenv("MOBINGI_ROOT_PASSWORD"),
+			Username: os.Getenv("MOBINGI_ROOT_USERNAME"),
+			Password: os.Getenv("MOBINGI_ROOT_PASSWORD"),
+			// Username:         os.Getenv("MOBINGI_USERNAME"),
+			// Password:         os.Getenv("MOBINGI_PASSWORD"),
 			BaseApiUrl:       "https://apidev.mobingi.com",
 			BaseRegistryUrl:  "https://dockereg2.labs.mobingi.com",
 			HttpClientConfig: &client.Config{Verbose: true},
