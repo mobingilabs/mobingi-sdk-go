@@ -4,16 +4,38 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/guregu/dynamo"
 	"github.com/mobingilabs/mobingi-sdk-go/client"
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
-	"os"
 )
 
 type Notificate struct {
 	Slack  bool
 	client client.HttpClient
+	cred   string
+	region string
+}
+
+type Event struct {
+	Sesha3 string `dynamo:"server_name"`
+	Slack  string `dynamo:"slack"`
+}
+
+func (w *Notificate) dynamoget(key string) (string, error) {
+	var results []Event
+	cred := credentials.NewSharedCredentials("/root/.aws/credentials", w.cred)
+	db := dynamo.New(session.New(), &aws.Config{Region: aws.String(w.region),
+		Credentials: cred,
+	})
+	table := db.Table("SESHA3")
+	err := table.Get("server_name", key).All(&results)
+	url := results[0].Slack
+	return url, err
 }
 
 func (w *Notificate) WebhookNotification(v interface{}) error {
@@ -26,7 +48,8 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 	//webhook URLs
 	log.Println("start get slack url")
 	if w.Slack {
-		urls = append(urls, os.Getenv("SLACK"))
+		slackURL, _ := w.dynamoget("slack")
+		urls = append(urls, slackURL)
 	}
 
 	log.Println("finish get slack url")
