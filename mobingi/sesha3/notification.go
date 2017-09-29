@@ -21,13 +21,13 @@ type Notificate struct {
 	Region string
 }
 
-type Event struct {
+type EventN struct {
 	Sesha3 string `dynamo:"server_name"`
 	Slack  string `dynamo:"slack"`
 }
 
 func (w *Notificate) Dynamoget(key string) (string, error) {
-	var results []Event
+	var results []EventN
 	cred := credentials.NewSharedCredentials("/root/.aws/credentials", w.Cred)
 	db := dynamo.New(session.New(), &aws.Config{Region: aws.String(w.Region),
 		Credentials: cred,
