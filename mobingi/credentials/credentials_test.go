@@ -19,6 +19,28 @@ func TestNew(t *testing.T) {
 	}
 }
 
+func TestUserDevAcct(t *testing.T) {
+	return
+	if os.Getenv("MOBINGI_TESTADD_CLIENT_ID") != "" && os.Getenv("MOBINGI_TESTADD_CLIENT_SECRET") != "" {
+		sess, _ := session.New(&session.Config{
+			Username:         os.Getenv("MOBINGI_ROOT_USERNAME"),
+			Password:         os.Getenv("MOBINGI_ROOT_PASSWORD"),
+			BaseApiUrl:       "https://apidev.mobingi.com",
+			BaseRegistryUrl:  "https://dockereg2.labs.mobingi.com",
+			HttpClientConfig: &client.Config{Verbose: true},
+		})
+
+		svc := New(sess)
+		resp, body, err := svc.User()
+		if err != nil {
+			t.Errorf("expecting nil error, received %v", err)
+		}
+
+		log.Println(resp, string(body))
+		// _, _ = resp, body
+	}
+}
+
 func TestList(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(r.URL.String()))

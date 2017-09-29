@@ -16,6 +16,12 @@ type creds struct {
 	client  client.HttpClient
 }
 
+func (c *creds) User() (*client.Response, []byte, error) {
+	ep := c.session.ApiEndpoint() + `/user?username=` + c.session.Config.Username
+	req := c.session.SimpleAuthRequest(http.MethodGet, ep, nil)
+	return c.client.Do(req)
+}
+
 type CredentialsListInput struct {
 	Vendor string
 }
