@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/mobingilabs/mobingi-sdk-go/client"
 	"github.com/pkg/errors"
+	"log"
 	"net/http"
 	"os"
 )
@@ -16,16 +17,19 @@ type Notificate struct {
 }
 
 func (w *Notificate) WebhookNotification(v interface{}) error {
+	log.Println("start webhook")
 	type payload_t struct {
 		Text string `json:"text"`
 	}
 
 	var urls []string
 	//webhook URLs
+	log.Println("start get slack url")
 	if w.Slack {
 		urls = append(urls, os.Getenv("SLACK"))
 	}
 
+	log.Println("finish get slack url")
 	var err_string string
 
 	switch v.(type) {
