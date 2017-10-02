@@ -41,6 +41,9 @@ func (n *Notificate) Dynamoget() (EventN, error) {
 
 func (w *Notificate) WebhookNotification(v interface{}) error {
 	log.Println("start webhook")
+	if w.Valid != true {
+		return errors.New("invalid")
+	}
 	type payload_t struct {
 		Text string `json:"text"`
 	}
