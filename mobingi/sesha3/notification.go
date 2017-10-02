@@ -35,10 +35,6 @@ func (n *Notificate) Dynamoget() (EventN, error) {
 	})
 	table := db.Table("SESHA3")
 	err := table.Get("server_name", serverName).All(&results)
-	if err != nil {
-		return "", errors.Wrap(err, "dynamo get failed")
-	}
-
 	url := results[0]
 	return url, err
 }
@@ -53,8 +49,8 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 	//webhook URLs
 	log.Println("start get slack url")
 	if w.Slack {
-		slackURL, _ := w.Dynamoget()
-		urls = append(urls, slackURL)
+		NotificateURL, _ := w.Dynamoget()
+		urls = append(urls, NotificateURL.Slack)
 	}
 
 	log.Println("finish get slack url")
