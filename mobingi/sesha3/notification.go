@@ -57,15 +57,15 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 
 	switch v.(type) {
 	case string:
-		err := fmt.Errorf("%s", v.(string))
-		err_string = fmt.Sprintf("%+v", errors.WithStack(err))
+		err := v.(string)
+		err_string = fmt.Sprintf("%+v", err)
 	case error:
 		err_string = fmt.Sprintf("%+v", errors.WithStack(v.(error)))
 	default:
 		err_string = fmt.Sprintf("%s", v)
 	}
 
-	err_string = "```error:" + err_string + "```"
+	err_string = "```" + err_string + "```"
 	payload := payload_t{
 		Text: err_string,
 	}
