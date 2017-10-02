@@ -21,12 +21,11 @@ type Notificate struct {
 	Region string
 }
 
-type EventN struct {
-	Sesha3 string `dynamo:"server_name"`
-	Slack  string `dynamo:"slack"`
-}
-
 func (w *Notificate) Dynamoget(key string) (string, error) {
+	type EventN struct {
+		Server_name string `dynamo:"server_name"`
+		Slack       string `dynamo:"slack"`
+	}
 	var results []EventN
 	cred := credentials.NewSharedCredentials("/root/.aws/credentials", w.Cred)
 	log.Println("dynamoget:cred", cred)
@@ -42,6 +41,7 @@ func (w *Notificate) Dynamoget(key string) (string, error) {
 	}
 
 	url := results[0].Slack
+	log.Println("dynamoget:slackurl", url)
 	return url, err
 }
 
