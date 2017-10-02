@@ -17,6 +17,7 @@ type Notificate struct {
 	Slack  bool
 	Cred   string
 	Region string
+	URLs   EventN
 }
 
 type EventN struct {
@@ -47,7 +48,7 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 	//webhook URLs
 	log.Println("start get slack url")
 	if w.Slack {
-		NotificateURL, _ := w.Dynamoget()
+		NotificateURL := w.URLs
 		urls = append(urls, NotificateURL.Slack)
 	}
 
