@@ -58,7 +58,7 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 	switch v.(type) {
 	case string:
 		err := v.(string)
-		err_string = fmt.Sprintf("%+v", err)
+		err_string = fmt.Sprintf("%v", err)
 	case error:
 		err_string = fmt.Sprintf("%+v", errors.WithStack(v.(error)))
 	default:
@@ -85,5 +85,5 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 		}
 	}
 
-	return errors.New(err_string)
+	return err
 }
