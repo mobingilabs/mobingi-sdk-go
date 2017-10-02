@@ -21,15 +21,15 @@ type Notificate struct {
 	Region string
 }
 
-func (w *Notificate) Dynamoget(key string) (string, error) {
+func (n *Notificate) Dynamoget(key string) (string, error) {
 	type EventN struct {
 		Server_name string `dynamo:"server_name"`
 		Slack       string `dynamo:"slack"`
 	}
 	var results []EventN
-	cred := credentials.NewSharedCredentials("/root/.aws/credentials", w.Cred)
+	cred := credentials.NewSharedCredentials("/root/.aws/credentials", n.Cred)
 	log.Println("dynamoget:cred", cred)
-	db := dynamo.New(session.New(), &aws.Config{Region: aws.String(w.Region),
+	db := dynamo.New(session.New(), &aws.Config{Region: aws.String(n.Region),
 		Credentials: cred,
 	})
 	log.Println("dynamoget:db", db)
@@ -37,6 +37,7 @@ func (w *Notificate) Dynamoget(key string) (string, error) {
 	log.Println("dynamoget:table", table)
 	err := table.Get("server_name", key).All(&results)
 	log.Println("dynamoget:get:", err)
+	log.Println("dynamoget:get:", results)
 	if err != nil {
 		return "", errors.Wrap(err, "dynamo get failed")
 	}
