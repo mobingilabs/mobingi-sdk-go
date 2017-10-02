@@ -35,7 +35,9 @@ func (n *Notificate) Dynamoget(key string) (string, error) {
 	log.Println("dynamoget:db", db)
 	table := db.Table("SESHA3")
 	log.Println("dynamoget:table", table)
-	err := table.Get("server_name", key).All(&results)
+	log.Println("dynamoget:key", key)
+	//	err := table.Get("server_name", key).All(&results)
+	err := table.Scan().All(&results)
 	log.Println("dynamoget:get:", err)
 	log.Println("dynamoget:get:", results)
 	if err != nil {
