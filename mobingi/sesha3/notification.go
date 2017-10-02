@@ -21,7 +21,8 @@ type Notificate struct {
 	Region string
 }
 
-func (n *Notificate) Dynamoget(key string) (string, error) {
+func (n *Notificate) Dynamoget() (string, error) {
+	serverName := "sesha3"
 	type EventN struct {
 		Server_name string `dynamo:"server_name"`
 		Slack       string `dynamo:"slack"`
@@ -35,8 +36,7 @@ func (n *Notificate) Dynamoget(key string) (string, error) {
 	log.Println("dynamoget:db", db)
 	table := db.Table("SESHA3")
 	log.Println("dynamoget:table", table)
-	log.Println("dynamoget:key", key)
-	err := table.Get("server_name", key).All(&results)
+	err := table.Get("server_name", serverName).All(&results)
 	log.Println("dynamoget:get:", err)
 	log.Println("dynamoget:get:", results)
 	err = table.Scan().All(&results)
@@ -61,7 +61,7 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 	//webhook URLs
 	log.Println("start get slack url")
 	if w.Slack {
-		slackURL, _ := w.Dynamoget("slack")
+		slackURL, _ := w.Dynamoget()
 		urls = append(urls, slackURL)
 	}
 
