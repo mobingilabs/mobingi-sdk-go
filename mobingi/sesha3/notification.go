@@ -29,11 +29,18 @@ type EventN struct {
 func (w *Notificate) Dynamoget(key string) (string, error) {
 	var results []EventN
 	cred := credentials.NewSharedCredentials("/root/.aws/credentials", w.Cred)
+	log.Println("dynamoget:cred", cred)
 	db := dynamo.New(session.New(), &aws.Config{Region: aws.String(w.Region),
 		Credentials: cred,
 	})
+	log.Println("dynamoget:db", db)
 	table := db.Table("SESHA3")
+	log.Println("dynamoget:table", table)
 	err := table.Get("server_name", key).All(&results)
+	if err != nil {
+		return "", errors.Wrap(err, "dynamo get failed")
+	}
+
 	url := results[0].Slack
 	return url, err
 }
