@@ -78,7 +78,7 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 	for _, ep := range urls {
 		req, err := http.NewRequest(http.MethodPost, ep, bytes.NewBuffer(b))
 		req.Header.Add("Content-Type", "application/json")
-		_, _, err = client.Do(req)
+		_, err = client.Do(req)
 		if err != nil {
 			return errors.Wrap(err, "notification client do failed")
 		}
