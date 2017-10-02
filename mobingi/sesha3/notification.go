@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
-	"github.com/mobingilabs/mobingi-sdk-go/client"
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
@@ -16,7 +15,6 @@ import (
 
 type Notificate struct {
 	Slack  bool
-	client client.HttpClient
 	Cred   string
 	Region string
 }
@@ -66,6 +64,7 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 		err_string = fmt.Sprintf("%s", v)
 	}
 
+	err_string = "```error:" + err_string + "```"
 	payload := payload_t{
 		Text: err_string,
 	}
@@ -75,10 +74,11 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 		return errors.Wrap(err, "payload marshal failed")
 	}
 
+	client := &http.Client{}
 	for _, ep := range urls {
 		req, err := http.NewRequest(http.MethodPost, ep, bytes.NewBuffer(b))
 		req.Header.Add("Content-Type", "application/json")
-		_, _, err = w.client.Do(req)
+		_, _, err = client.Do(req)
 		if err != nil {
 			return errors.Wrap(err, "notification client do failed")
 		}
