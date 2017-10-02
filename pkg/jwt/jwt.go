@@ -5,6 +5,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"time"
@@ -15,92 +16,124 @@ import (
 	"github.com/pkg/errors"
 )
 
-type CustomClaims struct {
-	Username string
-	Passwd   string
-	jwt.StandardClaims
-}
+var rsainit bool
 
-type jwtctx struct {
-	name    string
-	rsa     string
-	pub     []byte
-	User    string
-	PemPub  string
-	PemPriv string
-	Reuse   bool
-}
-
-func (j *jwtctx) GenerateToken() (*jwt.Token, string, error) {
-	var clms CustomClaims
-	var stoken string
-
-	expire := time.Hour * 24
-	clms.ExpiresAt = time.Now().Add(expire).Unix()
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS512"), clms)
-	defkey, err := ioutil.ReadFile(j.PemPriv)
-	if err != nil {
-		return token, stoken, errors.Wrap(err, "readfile failed")
-	}
-
-	key, err := jwt.ParseRSAPrivateKeyFromPEM(defkey)
-	if err != nil {
-		return token, stoken, errors.Wrap(err, "parse priv key from pem failed")
-	}
-
-	stoken, err = token.SignedString(key)
-	return token, stoken, nil
-}
-
-func NewCtx(user string) (*jwtctx, error) {
-	var ctx jwtctx
-
-	tmpdir := os.TempDir() + "/token/rsa/"
+func init() {
+	tmpdir := os.TempDir() + "/sesha3/rsa/"
 	debug.Info("tmp:", tmpdir)
-	ctx.User = user
-	ctx.PemPub = tmpdir + user + ".pem.pub"
-	ctx.PemPriv = tmpdir + user + ".pem"
-	ctx.Reuse = true
+	pub := tmpdir + "token.pem.pub"
+	prv := tmpdir + "token.pem"
 
 	// create dir if necessary
 	if !private.Exists(tmpdir) {
 		err := os.MkdirAll(tmpdir, 0700)
 		if err != nil {
-			return nil, errors.Wrap(err, "mkdirall failed")
+			return
 		}
 	}
 
 	// create public and private pem files
-	if !private.Exists(ctx.PemPub) || !private.Exists(ctx.PemPriv) {
-		ctx.Reuse = false // we are not reusing pem files
+	if !private.Exists(pub) || !private.Exists(prv) {
 		priv, err := rsa.GenerateKey(rand.Reader, 2048)
-		privder := x509.MarshalPKCS1PrivateKey(priv)
 		if err != nil {
-			return nil, errors.Wrap(err, "MarshalPKCS1PrivateKey failed")
+			return
 		}
 
+		privder := x509.MarshalPKCS1PrivateKey(priv)
 		pubkey := priv.Public()
 		pubder, err := x509.MarshalPKIXPublicKey(pubkey)
 		if err != nil {
-			return nil, errors.Wrap(err, "MarshalPKIXPublicKey failed")
+			return
 		}
 
 		pubblock := &pem.Block{Type: "RSA PUBLIC KEY", Bytes: pubder}
 		pemblock := &pem.Block{Type: "RSA PRIVATE KEY", Bytes: privder}
-		pubfile, err := os.OpenFile(ctx.PemPub, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+		pubfile, err := os.OpenFile(pub, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 		if err != nil {
-			return nil, errors.Wrap(err, "open file failed (pub)")
+			return
 		}
 
 		defer pubfile.Close()
-		privfile, err := os.OpenFile(ctx.PemPriv, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+		prvfile, err := os.OpenFile(prv, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 		if err != nil {
-			return nil, errors.Wrap(err, "open file failed (priv)")
+			return
 		}
 
-		defer privfile.Close()
+		defer prvfile.Close()
 		pem.Encode(pubfile, pubblock)
-		pem.Encode(privfile, pemblock)
+		pem.Encode(prvfile, pemblock)
+	}
+
+	rsainit = true
+}
+
+type WrapperClaims struct {
+	Data map[string]interface{}
+	jwt.StandardClaims
+}
+
+type jwtctx struct {
+	Pub    []byte
+	Prv    []byte
+	PemPub string
+	PemPrv string
+}
+
+func (j *jwtctx) GenerateToken(data map[string]interface{}) (*jwt.Token, string, error) {
+	var stoken string
+	var claims WrapperClaims
+
+	claims.Data = data
+	claims.ExpiresAt = time.Now().Add(time.Hour * 24).Unix()
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS512"), claims)
+	key, err := jwt.ParseRSAPrivateKeyFromPEM(j.Prv)
+	if err != nil {
+		return token, stoken, errors.Wrap(err, "parse priv key from pem failed")
+	}
+
+	stoken, err = token.SignedString(key)
+	if err != nil {
+		return token, stoken, errors.Wrap(err, "signed string failed")
+	}
+
+	return token, stoken, nil
+}
+
+func (j *jwtctx) ParseToken(token string) (*jwt.Token, error) {
+	key, err := jwt.ParseRSAPublicKeyFromPEM(j.Pub)
+	if err != nil {
+		return nil, errors.Wrap(err, "ParseRSAPublicKeyFromPEM failed")
+	}
+
+	var claims WrapperClaims
+	return jwt.ParseWithClaims(token, &claims, func(tk *jwt.Token) (interface{}, error) {
+		if _, ok := tk.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", tk.Header["alg"])
+		}
+
+		return key, nil
+	})
+}
+
+func NewCtx() (*jwtctx, error) {
+	if !rsainit {
+		return nil, errors.New("failed in rsa init")
+	}
+
+	var ctx jwtctx
+	var err error
+
+	tmpdir := os.TempDir() + "/sesha3/rsa/"
+	ctx.PemPub = tmpdir + "token.pem.pub"
+	ctx.PemPrv = tmpdir + "token.pem"
+	ctx.Pub, err = ioutil.ReadFile(ctx.PemPub)
+	if err != nil {
+		return nil, errors.Wrap(err, "read public pem failed")
+	}
+
+	ctx.Prv, err = ioutil.ReadFile(ctx.PemPrv)
+	if err != nil {
+		return nil, errors.Wrap(err, "read private pem failed")
 	}
 
 	return &ctx, nil
