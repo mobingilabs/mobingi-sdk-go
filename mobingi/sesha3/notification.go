@@ -18,6 +18,7 @@ type Notificate struct {
 	Cred   string
 	Region string
 	URLs   EventN
+	Valid  bool
 }
 
 type EventN struct {
