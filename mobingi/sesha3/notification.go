@@ -60,7 +60,7 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 
 	log.Println("finish get slack url")
 	var err_string string
-	err_string = time.Now().String() + "\n"
+	err_string = time.Now().Format("Basic") + "\n"
 
 	switch v.(type) {
 	case string:
