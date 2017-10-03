@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
 	"github.com/pkg/errors"
-	"log"
-	"net/http"
 )
 
 type Notificate struct {
@@ -58,15 +60,16 @@ func (w *Notificate) WebhookNotification(v interface{}) error {
 
 	log.Println("finish get slack url")
 	var err_string string
+	err_string = time.Now().String() + "\n"
 
 	switch v.(type) {
 	case string:
 		err := v.(string)
-		err_string = "Info:" + fmt.Sprintf("%v", err)
+		err_string += "info: " + fmt.Sprintf("%v", err)
 	case error:
-		err_string = "Error:" + fmt.Sprintf("%+v", errors.WithStack(v.(error)))
+		err_string += "error: " + fmt.Sprintf("%+v", errors.WithStack(v.(error)))
 	default:
-		err_string = fmt.Sprintf("%s", v)
+		err_string += fmt.Sprintf("%s", v)
 	}
 
 	err_string = "```" + err_string + "```"
