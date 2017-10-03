@@ -9,6 +9,9 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
+	var notifi Notificate
+	_ = notifi
+
 	url := &SeshaClientInput{URL: "https://sesha3.labs.mobingi.com:8568/d3aiwuxow4mxnsgc4j7usvcpw0bjh27kg94c/"}
 	cli, err := NewClient(url)
 	if err != nil {
