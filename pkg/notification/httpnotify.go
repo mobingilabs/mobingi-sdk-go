@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"net/http"
 
+	"github.com/mobingilabs/mobingi-sdk-go/client"
 	"github.com/pkg/errors"
 )
 
@@ -12,10 +13,10 @@ type simpleHttpNotify struct {
 }
 
 func (h *simpleHttpNotify) Notify(payload []byte) error {
-	client := &http.Client{}
+	c := client.NewSimpleHttpClient()
 	req, err := http.NewRequest(http.MethodPost, h.Endpoint, bytes.NewBuffer(payload))
 	req.Header.Add("Content-Type", "application/json")
-	_, err = client.Do(req)
+	_, _, err = c.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "notify "+h.Endpoint+" failed")
 	}
