@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/debug"
@@ -18,15 +19,15 @@ func ProcessFileUpload(r *http.Request) error {
 	}
 
 	defer file.Close()
-	path := r.FormValue("uploadpath")
-	if path == "" {
-		path = os.TempDir()
+	upath := r.FormValue("uploadpath")
+	if upath == "" {
+		upath = os.TempDir()
 	}
 
 	_, fstr := filepath.Split(handler.Filename)
-	debug.Info("path:", path)
+	debug.Info("path:", upath)
 	debug.Info("file:", handler.Filename)
-	f, err := os.Create(path + "/" + fstr)
+	f, err := os.Create(path.Join(upath, fstr))
 	if err != nil {
 		return errors.Wrap(err, "create file failed")
 	}

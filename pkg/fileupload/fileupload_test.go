@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path"
 	"testing"
 )
 
@@ -25,7 +26,7 @@ func TestProcessFileUpload(t *testing.T) {
 
 	// write temp file for upload
 	tmpdir := os.TempDir()
-	fname := tmpdir + "/testupload.txt"
+	fname := path.Join(tmpdir, "testupload.txt")
 	err := ioutil.WriteFile(fname, []byte("hello"), 0600)
 	if err != nil {
 		t.Fatal("error:", err)
