@@ -15,7 +15,7 @@ import (
 
 func TestProcessFileUpload(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := ProcessFileUpload(w, r)
+		err := ProcessFileUpload(r)
 		if err != nil {
 			t.Fatal("error:", err)
 		}

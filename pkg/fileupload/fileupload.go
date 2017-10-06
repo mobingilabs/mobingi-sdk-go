@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func ProcessFileUpload(w http.ResponseWriter, r *http.Request) error {
+func ProcessFileUpload(r *http.Request) error {
 	r.ParseMultipartForm(32 << 20)
 	file, handler, err := r.FormFile("uploadfile")
 	if err != nil {
