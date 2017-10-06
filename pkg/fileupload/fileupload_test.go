@@ -91,11 +91,4 @@ func TestProcessFileUpload(t *testing.T) {
 	if err != nil {
 		t.Fatal("error:", err)
 	}
-
-	defer func() {
-		err := os.Remove(fname)
-		if err != nil {
-			t.Fatal("error:", err)
-		}
-	}()
 }
