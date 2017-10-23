@@ -39,9 +39,9 @@ type ReadCtx struct {
 // Read reads message from pullr SQS. First return value is the raw AWS SDK response object. The
 // first string slice are the messages, and the next is the receipt handles for easy access.
 func (qc *QueueClient) Read(rc *ReadCtx) (*sqs.ReceiveMessageOutput, []string, []string, error) {
-	var mxm int64 = 1
-	var vt int64 = 36000
-	var wt int64 = 10 // long polling
+	var mxm int64 = 1    // 1 message
+	var vt int64 = 36000 // 10 hours
+	var wt int64 = 10    // long polling
 	m := make([]string, 0)
 	h := make([]string, 0)
 
