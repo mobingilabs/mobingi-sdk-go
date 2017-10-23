@@ -53,7 +53,7 @@ func (qc *QueueClient) Read(rc *ReadCtx) (*sqs.ReceiveMessageOutput, []string, [
 
 	qurl := os.Getenv("PULLR_SQS_URL")
 	svc := sqs.New(session.New())
-	result, err := svc.ReceiveMessage(&sqs.ReceiveMessageInput{
+	res, err := svc.ReceiveMessage(&sqs.ReceiveMessageInput{
 		AttributeNames: []*string{
 			aws.String(sqs.MessageSystemAttributeNameSentTimestamp),
 		},
@@ -70,7 +70,7 @@ func (qc *QueueClient) Read(rc *ReadCtx) (*sqs.ReceiveMessageOutput, []string, [
 		return nil, nil, nil, errors.Wrap(err, "recv msg failed")
 	}
 
-	for _, item := range result.Messages {
+	for _, item := range res.Messages {
 		m = append(m, *item.Body)
 		h = append(h, *item.ReceiptHandle)
 		debug.Info("sqs_recv:", *item.ReceiptHandle)
@@ -95,5 +95,5 @@ func (qc *QueueClient) Read(rc *ReadCtx) (*sqs.ReceiveMessageOutput, []string, [
 		}
 	}
 
-	return result, m, h, nil
+	return res, m, h, nil
 }
