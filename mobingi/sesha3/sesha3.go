@@ -52,12 +52,40 @@ type sesha3 struct {
 	client  client.HttpClient
 }
 
-type GetSessionUrlInput struct {
-	StackId  string
-	IpAddr   string
-	Flag     string
-	InstUser string
-	Timeout  int64
+func (s *sesha3) GetToken() (*client.Response, []byte, string, error) {
+	var token string
+
+	tp := TokenPayload{
+		Username: s.session.Config.Username,
+		Passwd:   s.session.Config.Password,
+	}
+
+	b, err := json.Marshal(tp)
+	if err != nil {
+		return nil, nil, token, errors.New("payload token marshal failed")
+	}
+
+	ep := s.session.Sesha3Endpoint() + "/token"
+	req, err := http.NewRequest(http.MethodGet, ep, bytes.NewBuffer(b))
+	req.Header.Add("Content-Type", "application/json")
+	resp, body, err := s.client.Do(req)
+	if err != nil {
+		return resp, body, token, errors.Wrap(err, "client do failed")
+	}
+
+	var m map[string]string
+	err = json.Unmarshal(body, &m)
+	if err != nil {
+		return resp, body, token, errors.Wrap(err, "token reply unmarshal failed")
+	}
+
+	tkn, ok := m["key"]
+	if !ok {
+		return resp, body, token, errors.Wrap(err, "can't find token")
+	}
+
+	token = tkn
+	return resp, body, token, nil
 }
 
 type ExecScriptInput struct {
@@ -80,12 +108,15 @@ func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, Scri
 	if in == nil {
 		return nil, nil, sresp, errors.New("input cannot be nil")
 	}
+
 	if in.Target == "" {
 		return nil, nil, sresp, errors.New("target cannot be empty")
 	}
+
 	if in.Script == "" {
 		return nil, nil, sresp, errors.New("script cannot be empty")
 	}
+
 	if in.ScriptName == "" {
 		return nil, nil, sresp, errors.New("script cannot be empty")
 	}
@@ -128,11 +159,12 @@ func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, Scri
 
 	pemurl := strings.Replace(ru.Data, "\\", "", -1)
 
-	//get sesha3 token
+	// get sesha3 token
 	type payload_token_t struct {
 		Username string `json:"username"`
 		Passwd   string `json:"passwd"`
 	}
+
 	payloadToken := payload_token_t{
 		Username: s.session.Config.Username,
 		Passwd:   s.session.Config.Password,
@@ -201,6 +233,14 @@ func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, Scri
 	}
 
 	return resp, body, sresp, nil
+}
+
+type GetSessionUrlInput struct {
+	StackId  string
+	IpAddr   string
+	Flag     string
+	InstUser string
+	Timeout  int64
 }
 
 func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte, string, error) {
