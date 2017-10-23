@@ -41,7 +41,7 @@ type ReadCtx struct {
 func (qc *QueueClient) Read(rc *ReadCtx) (*sqs.ReceiveMessageOutput, []string, []string, error) {
 	var mxm int64 = 1
 	var vt int64 = 36000
-	var wt int64
+	var wt int64 = 10 // long polling
 	m := make([]string, 0)
 	h := make([]string, 0)
 
