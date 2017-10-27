@@ -145,7 +145,7 @@ func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, Scri
 	// get pem url from stack id
 	almsvc := alm.New(s.session)
 	targetmap := getTargetMap(in.Target)
-	pemurls := []map[string]string{}
+	pemurls := make(map[string]string)
 	for stackid := range targetmap {
 		inpem := alm.GetPemInput{
 			StackId: stackid,
@@ -170,10 +170,7 @@ func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, Scri
 		}
 
 		pemurl := strings.Replace(ru.Data, "\\", "", -1)
-		pemap := make(map[string]string)
-		pemap["stackid"] = stackid
-		pemap["url"] = pemurl
-		pemurls = append(pemurls, pemap)
+		pemurls[stackid] = pemurl
 	}
 
 	// get sesha3 token
@@ -183,11 +180,11 @@ func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, Scri
 	}
 
 	type payload_t struct {
-		Pem        []map[string]string `json:"pem"`
-		Target     map[string]string   `json:"target"`
-		Script     string              `json:"script"`
-		ScriptName string              `json:"script_name"`
-		User       string              `json:"user"`
+		Pem        map[string]string `json:"pem"`
+		Target     map[string]string `json:"target"`
+		Script     string            `json:"script"`
+		ScriptName string            `json:"script_name"`
+		User       string            `json:"user"`
 	}
 
 	payload := payload_t{
