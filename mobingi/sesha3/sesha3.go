@@ -180,16 +180,16 @@ func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, Scri
 	}
 
 	type payload_t struct {
-		Pem        map[string]string `json:"pem"`
 		Target     map[string]string `json:"target"`
+		Pem        map[string]string `json:"stack_pem"`
 		Script     string            `json:"script"`
 		ScriptName string            `json:"script_name"`
 		User       string            `json:"user"`
 	}
 
 	payload := payload_t{
-		Pem:        pemurls,
 		Target:     targetmap,
+		Pem:        pemurls,
 		Script:     in.Script,
 		ScriptName: in.ScriptName,
 		User:       in.InstUser,
