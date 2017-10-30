@@ -10,8 +10,8 @@
 [[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/xml/xmlutil","service/sns","service/sqs","service/sts"]
-  revision = "209e63d002840d9ed94159e6639216a53b7cc28b"
-  version = "v1.12.16"
+  revision = "ee1f179877b2daf2aaabf71fa900773bf8842253"
+  version = "v1.12.19"
 
 [[projects]]
   branch = "master"
@@ -46,8 +46,8 @@
 [[projects]]
   name = "github.com/go-ini/ini"
   packages = ["."]
-  revision = "5b3e00af70a9484542169a976dcab8d03e601a17"
-  version = "v1.30.0"
+  revision = "f280b3ba517bf5fc98922624f21fb0e7a92adaec"
+  version = "v1.30.3"
 
 [[projects]]
   name = "github.com/gorilla/websocket"
@@ -94,7 +94,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "a1a1f1746d156bbc9954f29134b20ed4ce2752f1"
+  revision = "661970f62f5897bc0cd5fdca7e087ba8a98a8fa1"
 
 [[projects]]
   branch = "v2"

@@ -1,3 +1,31 @@
+Release v1.12.19 (2017-10-26)
+===
+
+### Service Client Updates
+* `aws/endpoints`: Updated Regions and Endpoints metadata.
+
+Release v1.12.18 (2017-10-26)
+===
+
+### Service Client Updates
+* `service/cloudfront`: Updates service API and documentation
+  * You can now specify additional options for MinimumProtocolVersion, which controls the SSL/TLS protocol that CloudFront uses to communicate with viewers. The minimum protocol version that you choose also determines the ciphers that CloudFront uses to encrypt the content that it returns to viewers.
+* `service/ec2`: Updates service API
+  * You are now able to create and launch EC2 P3 instance, next generation GPU instances, optimized for machine learning and high performance computing applications. With up to eight NVIDIA Tesla V100 GPUs, P3 instances provide up to one petaflop of mixed-precision, 125 teraflops of single-precision, and 62 teraflops of double-precision floating point performance, as well as a 300 GB/s second-generation NVLink interconnect that enables high-speed, low-latency GPU-to-GPU communication. P3 instances also feature up to 64 vCPUs based on custom Intel Xeon E5 (Broadwell) processors, 488 GB of DRAM, and 25 Gbps of dedicated aggregate network bandwidth using the Elastic Network Adapter (ENA).
+* `aws/endpoints`: Updated Regions and Endpoints metadata.
+
+Release v1.12.17 (2017-10-24)
+===
+
+### Service Client Updates
+* `service/config`: Updates service API
+* `service/elasticache`: Updates service API, documentation, and examples
+  * Amazon ElastiCache for Redis today announced support for data encryption both for data in-transit and data at-rest. The new encryption in-transit functionality enables ElastiCache for Redis customers to encrypt data for all communication between clients and Redis engine, and all intra-cluster Redis communication. The encryption at-rest functionality allows customers to encrypt their S3 based backups. Customers can begin using the new functionality by simply enabling this functionality via AWS console, and a small configuration change in their Redis clients. The ElastiCache for Redis service automatically manages life cycle of the certificates required for encryption, including the issuance, renewal and expiration of certificates. Additionally, as part of this launch, customers will gain the ability to start using the Redis AUTH command that provides an added level of authentication.
+* `service/glue`: Adds new service
+  * AWS Glue: Adding a new API, BatchStopJobRun, to stop one or more job runs for a specified Job.
+* `service/pinpoint`: Updates service API and documentation
+  * Added support for APNs VoIP messages. Added support for collapsible IDs, message priority, and TTL for APNs and FCM/GCM.
+
 Release v1.12.16 (2017-10-23)
 ===
 
