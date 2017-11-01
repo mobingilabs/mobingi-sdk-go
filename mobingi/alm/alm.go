@@ -307,8 +307,9 @@ func (s *stack) GetPem(in *GetPemInput) (*client.Response, []byte, []byte, error
 }
 
 type WalkerCtx struct {
-	StackCallback    func(*ListStack) error
-	InstanceCallback func(*ListStack, string, *Instance, error) error
+	Data             interface{} // generic data to be passed to callbacks
+	StackCallback    func(interface{}, *ListStack) error
+	InstanceCallback func(interface{}, *ListStack, string, *Instance, error) error
 	StopOnError      bool // stop walk when any callback fails
 }
 
@@ -330,7 +331,7 @@ func (s *stack) Walker(ctx *WalkerCtx) error {
 
 	for _, item := range stacks {
 		if ctx.StackCallback != nil {
-			err = ctx.StackCallback(&item)
+			err = ctx.StackCallback(ctx.Data, &item)
 			if err != nil {
 				if ctx.StopOnError {
 					return err
@@ -344,7 +345,7 @@ func (s *stack) Walker(ctx *WalkerCtx) error {
 
 		if err != nil {
 			if ctx.InstanceCallback != nil {
-				err = ctx.InstanceCallback(&item, "", nil, err)
+				err = ctx.InstanceCallback(ctx.Data, &item, "", nil, err)
 				if err != nil {
 					if ctx.StopOnError {
 						return err
@@ -356,7 +357,7 @@ func (s *stack) Walker(ctx *WalkerCtx) error {
 				var ds DescribeStack
 				err = json.Unmarshal(body, &ds)
 				if err != nil {
-					err = ctx.InstanceCallback(&item, "", nil, err)
+					err = ctx.InstanceCallback(ctx.Data, &item, "", nil, err)
 					if err != nil {
 						if ctx.StopOnError {
 							return err
@@ -367,7 +368,7 @@ func (s *stack) Walker(ctx *WalkerCtx) error {
 				var mi map[string][]Instance
 				err = json.Unmarshal(ds.Instances, &mi)
 				if err != nil {
-					err = ctx.InstanceCallback(&item, "", nil, err)
+					err = ctx.InstanceCallback(ctx.Data, &item, "", nil, err)
 					if err != nil {
 						if ctx.StopOnError {
 							return err
@@ -377,7 +378,7 @@ func (s *stack) Walker(ctx *WalkerCtx) error {
 
 				for flag, insts := range mi {
 					for _, inst := range insts {
-						err = ctx.InstanceCallback(&item, flag, &inst, nil)
+						err = ctx.InstanceCallback(ctx.Data, &item, flag, &inst, nil)
 						if err != nil {
 							if ctx.StopOnError {
 								return err
