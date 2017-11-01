@@ -16,7 +16,7 @@ install:
   - go version
   - go env
   - go get -u -v github.com/golang/dep/...
-  - %GOPATH%\bin\dep ensure -v
+  - dep ensure -v
 
 build: false
 
