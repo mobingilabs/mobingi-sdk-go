@@ -5,9 +5,9 @@
 
 Copyright (c) Mobingi 2017. All rights reserved.
 
-### Install dependencies and test
+This sdk uses [dep](https://github.com/golang/dep) as its vendor manager. To install dependencies and run tests:
 
-```
+```bash
 # install dep
 $ go get -u -v github.com/golang/dep/...
 
