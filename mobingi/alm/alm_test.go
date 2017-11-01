@@ -536,8 +536,12 @@ func TestWalkerDevAcct(t *testing.T) {
 
 		alm := New(sess)
 		in := WalkerCtx{
-			InstanceCallback: func(ls *ListStack, inst *Instance, err error) error {
-				debug.Info(ls.StackId, inst.PublicDnsName)
+			StackCallback: func(ls *ListStack) error {
+				debug.Info("stack-callback:", ls.StackId)
+				return nil
+			},
+			InstanceCallback: func(ls *ListStack, flag string, inst *Instance, err error) error {
+				debug.Info("instance-callback:", ls.StackId, inst.PublicDnsName)
 				return nil
 			},
 		}
