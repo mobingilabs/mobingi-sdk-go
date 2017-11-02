@@ -89,6 +89,8 @@ func (s *sesha3) GetToken() (*client.Response, []byte, string, error) {
 }
 
 type ExecScriptInput struct {
+	// Target is the target instance for the script execution.
+	// Format: stack-id|user@ip:flag
 	Target     string
 	Script     string
 	ScriptName string
