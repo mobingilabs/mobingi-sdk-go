@@ -96,11 +96,6 @@ type ExecScriptInput struct {
 	Flag       string
 }
 
-type ScriptRes struct {
-	Out string `json:"stdout"`
-	Err string `json:"stderr"`
-}
-
 func getTargetMap(targets string) map[string]string {
 	result := make(map[string]string)
 	targetList := strings.Split(targets, ":")
