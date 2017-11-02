@@ -6,11 +6,12 @@ type TokenPayload struct {
 }
 
 type ExecScriptInstanceResponse struct {
-	StackId string `json:"stack_id"`
-	Ip      string `json:"ip"`
-	CmdOut  []byte `json:"out"`
+	Ip     string `json:"ip"`
+	CmdOut []byte `json:"out"`
+	Err    error  `json:"err"`
 }
 
-type ExecScriptResponse struct {
+type ExecScriptStackResponse struct {
+	StackId string                       `json:"stack_id"`
 	Outputs []ExecScriptInstanceResponse `json:"outputs"`
 }
