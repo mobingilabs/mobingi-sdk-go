@@ -108,6 +108,7 @@ func getTargetMap(targets string) map[string]string {
 		item := strings.Split(target, "|")
 		result[item[0]] = strings.Join(item[1:], ",")
 	}
+
 	return result
 }
 
@@ -159,10 +160,12 @@ func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, Scri
 		if err != nil {
 			return resp, body, sresp, errors.Wrap(err, "get pem failed")
 		}
+
 		type rsaurl struct {
 			Status string `json:"status"`
 			Data   string `json:"data"`
 		}
+
 		var ru rsaurl
 		err = json.Unmarshal(body, &ru)
 		if err != nil {
