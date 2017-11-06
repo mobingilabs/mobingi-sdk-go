@@ -114,6 +114,7 @@ type ExecScriptPayload struct {
 	Script []byte `json:"script"`
 }
 
+/*
 func getTargetMap(targets string) map[string]string {
 	result := make(map[string]string)
 	targetList := strings.Split(targets, ":")
@@ -124,6 +125,7 @@ func getTargetMap(targets string) map[string]string {
 
 	return result
 }
+*/
 
 func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, error) {
 	// var resp *client.Response
