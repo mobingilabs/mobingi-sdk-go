@@ -25,8 +25,7 @@ var (
 )
 
 func init() {
-	tmpdir := os.TempDir() + "/sesha3/rsa/"
-	debug.Info("tmp:", tmpdir)
+	tmpdir := os.TempDir() + "/jwt/rsa/"
 	pempub = tmpdir + "token.pem.pub"
 	pemprv = tmpdir + "token.pem"
 
