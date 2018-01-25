@@ -36,8 +36,8 @@
     "service/sqs",
     "service/sts"
   ]
-  revision = "82ad808f2307df0776c038bfd7ea85440a35c02e"
-  version = "v1.12.53"
+  revision = "decd990ddc5dcdf2f73309cbcab90d06b996ca28"
+  version = "v1.12.67"
 
 [[projects]]
   branch = "master"
@@ -119,7 +119,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "d585fd2cc9195196078f516b69daff6744ef5e84"
+  revision = "3d37316aaa6bd9929127ac9a527abf408178ea7b"
 
 [[projects]]
   branch = "master"
@@ -128,13 +128,13 @@
     "unix",
     "windows"
   ]
-  revision = "83801418e1b59fb1880e363299581ee543af32ca"
+  revision = "af9a21289d0040306ecc55fa668c95246f1f8425"
 
 [[projects]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "287cf08546ab5e7e37d55a84f7ed3fd1db036de5"
+  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
 
 [solve-meta]
   analyzer-name = "dep"

@@ -97,3 +97,35 @@ func NewCtx(pemdir ...string) (*jwtctx, error) {
 
 	return &ctx, nil
 }
+
+type Config struct {
+	PublicTokenFile  string
+	PrivateTokenFile string
+}
+
+func NewCtxWithConfig(cnf *Config) (*jwtctx, error) {
+	if cnf == nil {
+		return nil, fmt.Errorf("config cannot be nil")
+	}
+
+	pubcache, err := ioutil.ReadFile(cnf.PublicTokenFile)
+	if err != nil {
+		debug.Error(err)
+		return nil, errors.Wrap(err, "pub readfile failed")
+	}
+
+	prvcache, err := ioutil.ReadFile(cnf.PrivateTokenFile)
+	if err != nil {
+		debug.Error(err)
+		return nil, errors.Wrap(err, "prv readfile failed")
+	}
+
+	ctx := jwtctx{
+		PemPub: cnf.PublicTokenFile,
+		PemPrv: cnf.PrivateTokenFile,
+		Pub:    pubcache,
+		Prv:    prvcache,
+	}
+
+	return &ctx, nil
+}
