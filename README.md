@@ -1,3 +1,7 @@
+**Deprecated: We recommend you to use [gosdk](https://github.com/mobingi/gosdk) instead.**
+
+----
+
 [![logo](./logos/mobingi-205x119.png)](https://mobingi.co.jp/)
 
 [![Build Status](https://travis-ci.org/mobingilabs/mobingi-sdk-go.svg?branch=master)](https://travis-ci.org/mobingilabs/mobingi-sdk-go)
